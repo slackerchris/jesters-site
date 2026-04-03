@@ -1,0 +1,23 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#101418" />
+      <stop offset="1" stop-color="#253242" />
+    </linearGradient>
+    <radialGradient id="pulseA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(220 100) rotate(31) scale(520 390)">
+      <stop stop-color="#F25F4C" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#F25F4C" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="pulseB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(980 520) rotate(-20) scale(460 320)">
+      <stop stop-color="#8CE6C7" stop-opacity="0.4" />
+      <stop offset="1" stop-color="#8CE6C7" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#pulseA)" />
+  <rect width="1200" height="630" fill="url(#pulseB)" />
+  <rect x="60" y="60" width="1080" height="510" rx="34" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.24)" />
+  <text x="110" y="250" fill="#F6F7EB" font-family="Fraunces, serif" font-size="86" font-weight="700">Local Store Website</text>
+  <text x="112" y="324" fill="#CFD5DD" font-family="Space Grotesk, sans-serif" font-size="40" font-weight="500">Facebook + Google Maps + Reviews Integration</text>
+  <text x="112" y="420" fill="#FFD166" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" letter-spacing="2">ASTRO STARTER</text>
+</svg>

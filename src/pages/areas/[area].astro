@@ -1,0 +1,91 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { fullStreetAddress, storeProfile } from '../../config/store';
+import Layout from '../../layouts/Layout.astro';
+
+interface AreaProps {
+	slug: string;
+	name: string;
+	summary: string;
+}
+
+export const getStaticPaths: GetStaticPaths = async () =>
+	storeProfile.serviceAreas.map((area) => ({
+		params: { area: area.slug },
+		props: { area }
+	}));
+
+const { area } = Astro.props as { area: AreaProps };
+const areaDescription = `${storeProfile.name} game store support for players in ${area.name}.`;
+
+const areaSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Store',
+	name: storeProfile.name,
+	url: `${storeProfile.websiteUrl}/areas/${area.slug}`,
+	description: `${storeProfile.name} game nights, products, and hobby support for players in ${area.name}.`,
+	telephone: storeProfile.phone,
+	areaServed: {
+		'@type': 'City',
+		name: area.name
+	},
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: storeProfile.address.streetAddress,
+		addressLocality: storeProfile.address.city,
+		addressRegion: storeProfile.address.region,
+		postalCode: storeProfile.address.postalCode,
+		addressCountry: storeProfile.address.countryCode
+	}
+};
+---
+
+<Layout
+	title={`${area.name} Player Community | ${storeProfile.name}`}
+	description={areaDescription}
+	canonicalUrl={`${storeProfile.websiteUrl}/areas/${area.slug}`}
+	ogImage={`${storeProfile.websiteUrl}/og-store.svg`}
+>
+	<script type="application/ld+json" set:html={JSON.stringify(areaSchema)}></script>
+	<div class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 md:px-10">
+		<header class="reveal-up flex items-center justify-between gap-6">
+			<a href="/" class="text-xl font-bold tracking-wide">{storeProfile.name}</a>
+			<nav class="flex items-center gap-5 text-sm font-semibold text-[var(--text-dim)]">
+				<a href="/" class="transition hover:text-white">Home</a>
+				<a href="/services" class="transition hover:text-white">Services</a>
+				<a href="/community" class="transition hover:text-white">Community</a>
+				<a href="/contact" class="transition hover:text-white">Contact</a>
+			</nav>
+		</header>
+
+		<section class="mt-12">
+			<p class="pill-badge">Local Player Community</p>
+			<h1 class="mt-4 text-4xl font-bold md:text-6xl">{storeProfile.name} for players in {area.name}</h1>
+			<p class="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--text-dim)] md:text-base">{area.summary}</p>
+		</section>
+
+		<section class="mt-10 grid gap-5 md:grid-cols-2">
+			<article class="surface-card p-6 md:p-7">
+				<h2 class="text-2xl font-bold">What players can expect</h2>
+				<ul class="mt-4 space-y-3 text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+					{storeProfile.services.slice(0, 3).map((service) => <li>- {service.name}</li>)}
+				</ul>
+			</article>
+			<article class="surface-card p-6 md:p-7">
+				<h2 class="text-2xl font-bold">Visit the shop</h2>
+				<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+					Swing by {fullStreetAddress}, {storeProfile.address.region} {storeProfile.address.postalCode} for game nights,
+					community play, and hobby support.
+				</p>
+				<a
+					href={storeProfile.googleMapsPlaceUrl}
+					target="_blank"
+					rel="noreferrer"
+					class="mt-5 inline-flex rounded-full bg-[var(--accent-500)] px-5 py-2 text-sm font-bold text-white transition hover:brightness-110"
+				>
+					Get Directions
+				</a>
+			</article>
+		</section>
+	</div>
+</Layout>

@@ -1,0 +1,141 @@
+---
+import { fullStreetAddress, storeProfile } from '../config/store';
+import Layout from '../layouts/Layout.astro';
+
+const contactDescription = `Contact ${storeProfile.name}, view business hours, and get directions.`;
+const isOpeningSoon = storeProfile.openingHours.every((entry) => entry.closed);
+
+function formatTimeLabel(value: string): string {
+	const trimmed = value.trim();
+	const match = trimmed.match(/^([0-9]|1\d|2[0-3]):([0-5]\d)$/);
+
+	if (!match) {
+		return trimmed;
+	}
+
+	const hours24 = Number(match[1]);
+	const minutes = match[2];
+	const period = hours24 >= 12 ? 'PM' : 'AM';
+	const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+
+	return `${hours12}:${minutes} ${period}`;
+}
+
+function formatHoursRange(opens: string, closes: string): string {
+	const openLabel = formatTimeLabel(opens);
+	const closeLabel = formatTimeLabel(closes);
+
+	if (!openLabel && !closeLabel) {
+		return 'Hours posted soon';
+	}
+
+	if (!openLabel || !closeLabel) {
+		return `${openLabel}${closeLabel}`.trim();
+	}
+
+	return `${openLabel} - ${closeLabel}`;
+}
+---
+
+<Layout
+	title={`Contact ${storeProfile.name} | Hours and Location`}
+	description={contactDescription}
+	canonicalUrl={`${storeProfile.websiteUrl}/contact`}
+	ogImage={`${storeProfile.websiteUrl}/og-store.svg`}
+>
+	<div class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 md:px-10">
+		<header class="reveal-up flex items-center justify-between gap-6">
+			<a href="/" class="text-xl font-bold tracking-wide">{storeProfile.name}</a>
+			<nav class="flex items-center gap-5 text-sm font-semibold text-[var(--text-dim)]">
+				<a href="/" class="transition hover:text-white">Home</a>
+				<a href="/community" class="transition hover:text-white">Community</a>
+				<a href={storeProfile.facebookPageUrl} target="_blank" rel="noreferrer" class="transition hover:text-white"
+					>Facebook</a
+				>
+			</nav>
+		</header>
+
+		<section class="mt-12 grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+			<article class="surface-card p-6 md:p-8">
+				<p class="pill-badge">Visit Us</p>
+				<h1 class="mt-4 text-4xl font-bold md:text-5xl">Visit Jesters Morrow</h1>
+				<p class="mt-4 text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+					Need product info, event updates, or directions? Everything you need is right here.
+				</p>
+				{
+					isOpeningSoon && (
+						<p class="mt-4 text-sm font-semibold text-[var(--accent-300)] uppercase tracking-[0.12em]">Opening soon</p>
+					)
+				}
+
+				<div class="mt-7 space-y-4">
+					<div>
+						<p class="text-xs tracking-[0.2em] text-[var(--accent-300)] uppercase">Phone</p>
+						<a href={`tel:${storeProfile.phone}`} class="mt-1 inline-flex text-lg font-bold hover:underline"
+							>{storeProfile.phone}</a
+						>
+					</div>
+					<div>
+						<p class="text-xs tracking-[0.2em] text-[var(--accent-300)] uppercase">Email</p>
+						<a href={`mailto:${storeProfile.email}`} class="mt-1 inline-flex text-lg font-bold hover:underline"
+							>{storeProfile.email}</a
+						>
+					</div>
+					<div>
+						<p class="text-xs tracking-[0.2em] text-[var(--accent-300)] uppercase">Address</p>
+						<p class="mt-1 text-lg font-bold">
+							{fullStreetAddress}, {storeProfile.address.region} {storeProfile.address.postalCode}
+						</p>
+					</div>
+				</div>
+
+				<div class="mt-8 flex flex-wrap gap-3">
+					<a
+						href={storeProfile.googleMapsPlaceUrl}
+						target="_blank"
+						rel="noreferrer"
+						class="rounded-full bg-[var(--accent-500)] px-5 py-2 text-sm font-bold text-white transition hover:brightness-110"
+					>
+						Get Directions
+					</a>
+					<a
+						href={storeProfile.googleReviewsUrl}
+						target="_blank"
+						rel="noreferrer"
+						class="rounded-full border border-white/30 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+					>
+						Leave a Review
+					</a>
+				</div>
+			</article>
+
+			<article class="surface-card p-6 md:p-8">
+				<h2 class="text-2xl font-bold">Opening hours</h2>
+				<div class="mt-5 divide-y divide-white/12 text-sm">
+					{
+						storeProfile.openingHours.map((entry) => (
+							<div class="flex items-center justify-between py-3">
+								<span class="font-semibold">{entry.label}</span>
+								<span class="text-[var(--text-dim)]">
+									{entry.closed ? 'Closed' : formatHoursRange(entry.opens, entry.closes)}
+								</span>
+							</div>
+						))
+					}
+				</div>
+			</article>
+		</section>
+
+		<section class="surface-card mt-6 overflow-hidden border border-white/15">
+			<iframe
+				title="Store Location"
+				src={storeProfile.googleMapsEmbedUrl}
+				width="100%"
+				height="380"
+				style="border:0"
+				loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade"
+			></iframe>
+		</section>
+	</div>
+</Layout>

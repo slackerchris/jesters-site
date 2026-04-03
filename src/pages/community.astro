@@ -1,0 +1,163 @@
+---
+import { storeProfile } from '../config/store';
+import Layout from '../layouts/Layout.astro';
+
+const communityDescription = `Community updates, Facebook feed, and store information for ${storeProfile.name}.`;
+const facebookPluginUrl = `https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(storeProfile.facebookPageUrl)}&tabs=events%2Ctimeline&width=520&height=680&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false`;
+
+const hasReviews = storeProfile.featuredReviews.length > 0;
+const hasPublicRating =
+	storeProfile.googleReviewCount > 0 && storeProfile.googleRating > 0;
+const ratingStatusLabel = hasPublicRating
+	? `${storeProfile.googleRating} (${storeProfile.googleReviewCount} reviews)`
+	: 'Not yet rated (0 reviews)';
+
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: storeProfile.faqItems.map((faq) => ({
+		'@type': 'Question',
+		name: faq.question,
+		acceptedAnswer: {
+			'@type': 'Answer',
+			text: faq.answer
+		}
+	}))
+};
+---
+
+<Layout
+	title={`Community | ${storeProfile.name}`}
+	description={communityDescription}
+	canonicalUrl={`${storeProfile.websiteUrl}/community`}
+	ogImage={`${storeProfile.websiteUrl}/og-store.svg`}
+>
+	<script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+
+	<div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
+		<header class="reveal-up flex items-center justify-between gap-6">
+			<a href="/" class="text-xl font-bold tracking-wide">{storeProfile.name}</a>
+			<nav class="flex items-center gap-5 text-sm font-semibold text-[var(--text-dim)]">
+				<a href="/" class="transition hover:text-white">Home</a>
+				<a href="/services" class="transition hover:text-white">Game Lines</a>
+				<a href="/events" class="transition hover:text-white">Events</a>
+				<a href="/contact" class="transition hover:text-white">Visit</a>
+			</nav>
+		</header>
+
+		<section class="mt-12">
+			<p class="pill-badge">Community Hub</p>
+			<h1 class="mt-4 text-4xl font-bold md:text-6xl">Facebook feed, map, and player info</h1>
+			<p class="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+				Everything social and community-related in one page: Facebook updates, location, reviews, and common questions.
+			</p>
+		</section>
+
+		<section class="mt-10 grid gap-5 lg:grid-cols-2">
+			<article class="surface-card p-5 md:p-6">
+				<h2 class="text-2xl font-bold">Facebook feed and events</h2>
+				<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">
+					Follow announcements, event posts, and day-to-day updates directly from the Jesters page.
+				</p>
+				<div class="mt-4 overflow-hidden border border-white/15">
+					<iframe
+						title="Facebook Page Feed"
+						src={facebookPluginUrl}
+						width="100%"
+						height="680"
+						style="border:none;overflow:hidden"
+						allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+					></iframe>
+				</div>
+			</article>
+
+			<div class="grid gap-5">
+				<article class="surface-card p-5 md:p-6">
+					<h2 class="text-2xl font-bold">Google Maps</h2>
+					<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">
+						New to the shop? Use map and directions links to get to game night on time.
+					</p>
+					<div class="mt-4 overflow-hidden border border-white/15">
+						<iframe
+							title="Store Location"
+							src={storeProfile.googleMapsEmbedUrl}
+							width="100%"
+							height="260"
+							style="border:0"
+							loading="lazy"
+							referrerpolicy="no-referrer-when-downgrade"
+						></iframe>
+					</div>
+					<a
+						href={storeProfile.googleMapsPlaceUrl}
+						target="_blank"
+						rel="noreferrer"
+						class="mt-4 inline-flex rounded-full border border-white/30 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+					>
+						Open in Google Maps
+					</a>
+				</article>
+
+				<article class="surface-card p-5 md:p-6">
+					<h2 class="text-2xl font-bold">Google rating and reviews</h2>
+					<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">
+						Current public status: {ratingStatusLabel}.
+					</p>
+					<div class="mt-4 flex flex-wrap gap-3">
+						<a
+							href={storeProfile.googleMapsPlaceUrl}
+							target="_blank"
+							rel="noreferrer"
+							class="rounded-full border border-white/30 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+						>
+							Read Reviews
+						</a>
+						<a
+							href={storeProfile.googleReviewsUrl}
+							target="_blank"
+							rel="noreferrer"
+							class="rounded-full bg-[var(--accent-500)] px-5 py-2 text-sm font-bold text-white transition hover:brightness-110"
+						>
+							Leave a Review
+						</a>
+					</div>
+				</article>
+			</div>
+		</section>
+
+		<section class="mt-16">
+			<h2 class="text-3xl font-bold md:text-4xl">Player feedback</h2>
+			{hasReviews ? (
+				<div class="mt-6 grid gap-3 md:grid-cols-1">
+					{
+						storeProfile.featuredReviews.map((review) => (
+							<article class="surface-card p-5">
+								<p class="text-xs tracking-[0.16em] text-[var(--accent-300)] uppercase">Player feedback</p>
+								<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">"{review.text}"</p>
+								<p class="mt-4 text-xs tracking-wide text-white/80 uppercase">{review.author} • {review.source}</p>
+							</article>
+						))
+					}
+				</div>
+			) : (
+				<div class="surface-card mt-6 p-5 text-sm text-[var(--text-dim)]">
+					No public Google reviews yet. Be the first player to leave one and support the shop launch.
+				</div>
+			)}
+		</section>
+
+		<section class="mt-16">
+			<h2 class="text-3xl font-bold md:text-4xl">Frequently asked questions</h2>
+			<div class="mt-6 grid gap-3 md:grid-cols-1">
+				{
+					storeProfile.faqItems.map((faq) => (
+						<article class="surface-card p-5">
+							<h3 class="text-lg font-bold">{faq.question}</h3>
+							<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">{faq.answer}</p>
+						</article>
+					))
+				}
+			</div>
+		</section>
+	</div>
+</Layout>

@@ -1,0 +1,113 @@
+---
+import '../styles/global.css';
+import jesterLogo from '../assets/jester.jpg';
+
+interface Props {
+	title?: string;
+	description?: string;
+	canonicalUrl?: string;
+	ogImage?: string;
+	ogType?: string;
+}
+
+const {
+	title = 'Astro Launch Kit',
+	description = 'Build modern, fast websites with Astro, Tailwind, and production deployment options.',
+	canonicalUrl,
+	ogImage,
+	ogType = 'website'
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap"
+			rel="stylesheet"
+		/>
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content={ogType} />
+		{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+		{ogImage && <meta property="og:image" content={ogImage} />}
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		{ogImage && <meta name="twitter:image" content={ogImage} />}
+		<title>{title}</title>
+	</head>
+	<body
+		class="relative overflow-x-hidden antialiased"
+		style={`--brand-watermark-url: url('${jesterLogo.src}')`}
+	>
+		<div class="theme-switcher" role="group" aria-label="Theme selector">
+			<label for="theme-select">Theme</label>
+			<select id="theme-select" class="theme-select" aria-label="Select color theme">
+				<option value="ember">Ember</option>
+				<option value="dark">Dark</option>
+				<option value="white">White</option>
+				<option value="tavern">Tavern</option>
+				<option value="arcade">Arcade</option>
+			</select>
+		</div>
+		<div class="site-content">
+			<slot />
+		</div>
+		<script is:inline>
+			(() => {
+				const STORAGE_KEY = 'jesters-theme';
+				const FALLBACK_THEME = 'ember';
+				const ALLOWED_THEMES = ['ember', 'dark', 'white', 'tavern', 'arcade'];
+
+				const root = document.documentElement;
+				const select = document.getElementById('theme-select');
+
+				const normalizeTheme = (theme) => {
+					if (ALLOWED_THEMES.includes(theme)) {
+						return theme;
+					}
+					return FALLBACK_THEME;
+				};
+
+				const applyTheme = (theme) => {
+					const normalized = normalizeTheme(theme);
+					root.dataset.theme = normalized;
+					if (select instanceof HTMLSelectElement) {
+						select.value = normalized;
+					}
+					return normalized;
+				};
+
+				let savedTheme = FALLBACK_THEME;
+				try {
+					savedTheme = localStorage.getItem(STORAGE_KEY) || FALLBACK_THEME;
+				} catch {
+					savedTheme = FALLBACK_THEME;
+				}
+
+				applyTheme(savedTheme);
+
+				if (select instanceof HTMLSelectElement) {
+					select.addEventListener('change', () => {
+						const currentTheme = applyTheme(select.value);
+						try {
+							localStorage.setItem(STORAGE_KEY, currentTheme);
+						} catch {
+							// Ignore storage failures in restricted contexts.
+						}
+					});
+				}
+			})();
+		</script>
+	</body>
+</html>

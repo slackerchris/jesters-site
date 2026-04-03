@@ -1,0 +1,269 @@
+@import "tailwindcss";
+
+:root {
+	--base-950: #101418;
+	--base-900: #1a222b;
+	--base-800: #253242;
+	--accent-500: #f25f4c;
+	--accent-300: #ffd166;
+	--mint-300: #8ce6c7;
+	--text-main: #f6f7eb;
+	--text-dim: #cfd5dd;
+	--bg-burst-a: rgb(242 95 76 / 26%);
+	--bg-burst-b: rgb(140 230 199 / 22%);
+	--bg-burst-c: rgb(255 209 102 / 20%);
+	--surface-line: rgb(255 255 255 / 22%);
+	--surface-fade: rgb(255 255 255 / 10%);
+	--selection: rgb(255 209 102 / 36%);
+	--theme-panel-a: rgb(0 0 0 / 40%);
+	--theme-panel-b: rgb(0 0 0 / 20%);
+	--theme-input-bg: rgb(0 0 0 / 24%);
+}
+
+html[data-theme='dark'] {
+	--base-950: #000000;
+	--base-900: #0b0c0e;
+	--base-800: #171a1f;
+	--accent-500: #8f9aa8;
+	--accent-300: #cfd6e0;
+	--mint-300: #a9b4c2;
+	--text-main: #f2f5f9;
+	--text-dim: #a8b0bc;
+	--bg-burst-a: rgb(143 154 168 / 16%);
+	--bg-burst-b: rgb(207 214 224 / 10%);
+	--bg-burst-c: rgb(169 180 194 / 8%);
+	--surface-line: rgb(242 245 249 / 20%);
+	--surface-fade: rgb(242 245 249 / 8%);
+	--selection: rgb(143 154 168 / 30%);
+	--theme-panel-a: rgb(0 0 0 / 48%);
+	--theme-panel-b: rgb(0 0 0 / 28%);
+	--theme-input-bg: rgb(0 0 0 / 32%);
+}
+
+html[data-theme='white'] {
+	--base-950: #f6f3ee;
+	--base-900: #ece7df;
+	--base-800: #e0d9cd;
+	--accent-500: #b84f2e;
+	--accent-300: #8e6730;
+	--mint-300: #3e6f5b;
+	--text-main: #1c1814;
+	--text-dim: #5e564d;
+	--bg-burst-a: rgb(184 79 46 / 16%);
+	--bg-burst-b: rgb(62 111 91 / 10%);
+	--bg-burst-c: rgb(142 103 48 / 9%);
+	--surface-line: rgb(28 24 20 / 18%);
+	--surface-fade: rgb(28 24 20 / 7%);
+	--selection: rgb(184 79 46 / 26%);
+	--theme-panel-a: rgb(255 255 255 / 84%);
+	--theme-panel-b: rgb(255 255 255 / 62%);
+	--theme-input-bg: rgb(255 255 255 / 80%);
+}
+
+html[data-theme='tavern'] {
+	--base-950: #12100d;
+	--base-900: #201914;
+	--base-800: #2e241c;
+	--accent-500: #c7632f;
+	--accent-300: #e4bf73;
+	--mint-300: #9ec7b2;
+	--text-main: #f7efe2;
+	--text-dim: #d6c7b3;
+	--bg-burst-a: rgb(199 99 47 / 24%);
+	--bg-burst-b: rgb(158 199 178 / 18%);
+	--bg-burst-c: rgb(228 191 115 / 16%);
+	--surface-line: rgb(255 239 220 / 24%);
+	--surface-fade: rgb(255 239 220 / 11%);
+	--selection: rgb(199 99 47 / 36%);
+	--theme-panel-a: rgb(0 0 0 / 38%);
+	--theme-panel-b: rgb(0 0 0 / 20%);
+	--theme-input-bg: rgb(0 0 0 / 24%);
+}
+
+html[data-theme='arcade'] {
+	--base-950: #0a1117;
+	--base-900: #111d28;
+	--base-800: #193042;
+	--accent-500: #ff5b45;
+	--accent-300: #3ce6d8;
+	--mint-300: #8be6ff;
+	--text-main: #edf8ff;
+	--text-dim: #bad6e4;
+	--bg-burst-a: rgb(60 230 216 / 22%);
+	--bg-burst-b: rgb(255 91 69 / 20%);
+	--bg-burst-c: rgb(139 230 255 / 18%);
+	--surface-line: rgb(237 248 255 / 24%);
+	--surface-fade: rgb(237 248 255 / 10%);
+	--selection: rgb(60 230 216 / 32%);
+	--theme-panel-a: rgb(0 0 0 / 44%);
+	--theme-panel-b: rgb(0 0 0 / 24%);
+	--theme-input-bg: rgb(0 0 0 / 28%);
+}
+
+html,
+body {
+	min-height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: 'Space Grotesk', 'Avenir Next', 'Segoe UI', sans-serif;
+	color: var(--text-main);
+	position: relative;
+	isolation: isolate;
+	background:
+		radial-gradient(45rem 45rem at 20% 10%, var(--bg-burst-a), transparent),
+		radial-gradient(30rem 30rem at 82% 24%, var(--bg-burst-b), transparent),
+		radial-gradient(38rem 38rem at 44% 85%, var(--bg-burst-c), transparent),
+		linear-gradient(150deg, var(--base-950), var(--base-900) 56%, var(--base-800));
+	background-attachment: fixed;
+}
+
+body::before {
+	content: '';
+	position: fixed;
+	left: -3rem;
+	bottom: -2rem;
+	width: min(42vw, 520px);
+	aspect-ratio: 1 / 1;
+	z-index: 0;
+	pointer-events: none;
+	opacity: 0.25;
+	filter: saturate(0.82) contrast(1.08) brightness(0.92);
+	mask-image: radial-gradient(circle at 50% 50%, rgb(0 0 0 / 78%), transparent 74%);
+	background-image: var(--brand-watermark-url);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	border-radius: 999px;
+	border: 1px solid rgb(255 255 255 / 18%);
+}
+
+.site-content {
+	position: relative;
+	z-index: 1;
+}
+
+@media (max-width: 900px) {
+	body::before {
+		width: min(62vw, 420px);
+		left: -4.5rem;
+		bottom: -3rem;
+		opacity: 0.2;
+	}
+}
+
+h1,
+h2,
+h3 {
+	font-family: Fraunces, 'Times New Roman', serif;
+	letter-spacing: 0.01em;
+}
+
+a {
+	color: inherit;
+}
+
+::selection {
+	background: var(--selection);
+}
+
+.surface-card {
+	position: relative;
+	background: linear-gradient(90deg, var(--surface-fade), rgb(255 255 255 / 0%) 45%);
+	border: 0;
+	border-top: 1px solid var(--surface-line);
+	box-shadow: none;
+}
+
+.surface-card::after {
+	content: none;
+}
+
+.pill-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.32rem 0.8rem;
+	border-radius: 999px;
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	background: linear-gradient(120deg, rgb(242 95 76 / 35%), rgb(255 209 102 / 35%));
+	border: 1px solid rgb(255 255 255 / 22%);
+}
+
+.theme-switcher {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.45rem 0.65rem;
+	border: 1px solid var(--surface-line);
+	background: linear-gradient(120deg, var(--theme-panel-a), var(--theme-panel-b));
+	backdrop-filter: blur(5px);
+	border-radius: 999px;
+}
+
+.theme-switcher label {
+	font-size: 0.72rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--text-dim);
+	font-weight: 700;
+}
+
+.theme-select {
+	appearance: none;
+	border: 1px solid var(--surface-line);
+	background: var(--theme-input-bg);
+	color: var(--text-main);
+	font-size: 0.8rem;
+	font-weight: 700;
+	border-radius: 999px;
+	padding: 0.28rem 1.6rem 0.28rem 0.7rem;
+	line-height: 1.2;
+	cursor: pointer;
+}
+
+.theme-select:focus {
+	outline: 2px solid var(--accent-300);
+	outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+	.theme-switcher {
+		top: auto;
+		bottom: 0.85rem;
+		right: 0.85rem;
+	}
+}
+
+.reveal-up {
+	opacity: 0;
+	transform: translateY(20px);
+	animation: reveal-up 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.reveal-delay-1 {
+	animation-delay: 110ms;
+}
+
+.reveal-delay-2 {
+	animation-delay: 210ms;
+}
+
+.reveal-delay-3 {
+	animation-delay: 310ms;
+}
+
+@keyframes reveal-up {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

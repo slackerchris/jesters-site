@@ -1,0 +1,145 @@
+{
+  "googleMapsEmbedUrl": "https://www.google.com/maps?q=10+Miranda+St.,+Morrow,+OH,+45152&output=embed",
+  "faqItems": [
+    {
+      "question": "Are you open right now?",
+      "answer": "We are currently marked as opening soon. Follow our Facebook page for opening announcements."
+    },
+    {
+      "question": "What games do you carry?",
+      "answer": "We focus on Magic: The Gathering, Lorcana, Pokemon, One Piece, and Warhammer 40K products."
+    },
+    {
+      "question": "Do you host gaming events?",
+      "answer": "Yes. We host gaming events and keep updates on Facebook and this website events page."
+    },
+    {
+      "question": "Where can I leave a review?",
+      "answer": "Use the Google Reviews link on the homepage or contact page. We are currently listed with no reviews yet."
+    }
+  ],
+  "name": "Jesters Morrow",
+  "featuredReviews": [],
+  "googleReviewsUrl": "https://maps.google.com/?q=10+Miranda+St.,+Morrow,+OH,+45152",
+  "phone": "(513) 284-4110",
+  "tagline": "Magic the Gathering, Lorcana, Pokemon, One Piece, Warhammer 40K, plushies, and gaming events.",
+  "serviceAreas": [
+    {
+      "slug": "morrow-oh",
+      "name": "Morrow, OH",
+      "summary": "Local pickup and in-store shopping for the Morrow gaming community."
+    },
+    {
+      "slug": "lebanon-oh",
+      "name": "Lebanon, OH",
+      "summary": "Easy access for nearby players looking for cards, accessories, and plushies."
+    },
+    {
+      "slug": "maineville-oh",
+      "name": "Maineville, OH",
+      "summary": "Regional destination for TCG products, tabletop communities, and hobby events."
+    }
+  ],
+  "priceRange": "$$",
+  "websiteUrl": "https://tcgplayerpro.com",
+  "address": {
+    "streetAddress": "10 Miranda St.",
+    "city": "Morrow",
+    "region": "OH",
+    "postalCode": "45152",
+    "countryCode": "US"
+  },
+  "googleRating": 0,
+  "openingHours": [
+    {
+      "label": "Monday",
+      "opens": "",
+      "closes": "",
+      "closed": true
+    },
+    {
+      "label": "Tuesday",
+      "opens": "",
+      "closes": "",
+      "closed": true
+    },
+    {
+      "label": "Wednesday",
+      "opens": "",
+      "closes": "",
+      "closed": true
+    },
+    {
+      "label": "Thursday",
+      "opens": "16:00",
+      "closes": "21:00",
+      "closed": false
+    },
+    {
+      "label": "Friday",
+      "opens": "12:00",
+      "closes": "23:00",
+      "closed": false
+    },
+    {
+      "label": "Saturday",
+      "opens": "9:00",
+      "closes": "21:00",
+      "closed": false
+    },
+    {
+      "label": "Sunday",
+      "opens": "12:00",
+      "closes": "18:00",
+      "closed": false
+    }
+  ],
+  "googleMapsPlaceUrl": "https://maps.google.com/?q=10+Miranda+St.,+Morrow,+OH,+45152",
+  "events": [
+    {
+      "title": "Commander Open Play Night",
+      "date": "2026-04-19",
+      "time": "6:00 PM - 9:00 PM",
+      "location": "Jesters Morrow",
+      "description": "Community Magic: The Gathering open tables and casual pods.",
+      "facebookEventUrl": "https://www.facebook.com/events/"
+    },
+    {
+      "title": "Pokemon Trade and Play Meetup",
+      "date": "2026-04-26",
+      "time": "1:00 PM - 4:00 PM",
+      "location": "Jesters Morrow",
+      "description": "Bring your decks and binders for local trade and casual matches.",
+      "facebookEventUrl": "https://www.facebook.com/events/"
+    },
+    {
+      "title": "Warhammer 40K Hobby Table Day",
+      "date": "2026-05-03",
+      "time": "12:00 PM - 5:00 PM",
+      "location": "Jesters Morrow",
+      "description": "Painting, list planning, and tabletop sessions for local 40K players.",
+      "facebookEventUrl": "https://www.facebook.com/events/"
+    }
+  ],
+  "facebookPageUrl": "https://www.facebook.com/profile.php?id=61578466583584",
+  "email": "jestersmorrow@gmail.com",
+  "services": [
+    {
+      "name": "Magic: The Gathering",
+      "description": "Sealed products, singles support, and regular play-focused community activity."
+    },
+    {
+      "name": "Lorcana, Pokemon, and One Piece",
+      "description": "Popular trading card game products for collectors, new players, and competitive locals."
+    },
+    {
+      "name": "Warhammer 40K and Tabletop Hobby",
+      "description": "Core hobby lines and accessories for painting, building, and in-store play nights."
+    },
+    {
+      "name": "Plushies and Gaming Merchandise",
+      "description": "Collectibles, gifts, and add-ons for hobby fans and community events."
+    }
+  ],
+  "googleReviewCount": 0
+}
