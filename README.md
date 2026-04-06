@@ -1,97 +1,92 @@
-# Jesters Site
+# Jester Cards and Games Site
 
-Astro website for a local game store with Decap CMS editing, Facebook/Google integrations, and multi-page navigation.
+Astro frontend + Payload CMS (owner login with email/password, no Git required for owner).
 
-## Requirements
+## Non-Negotiable Owner Rule
 
-- Node.js 22+
-- npm 10+
+- Owner does not use Git.
+- Owner does not need GitHub/GitLab account.
+- Owner editing flow is: log in, edit, publish.
 
-## Development
+## Current Architecture
+
+- Frontend website: this Astro project
+- CMS: Payload (self-hosted by you)
+- Admin entry page in frontend: `/admin/`
+  - This page forwards users to your Payload admin URL
+
+## How Owner Edits Content
+
+1. Owner opens `/admin/` on the website.
+2. Owner clicks `Open Payload Admin`.
+3. Owner logs in with email/password.
+4. Owner edits content in Payload.
+5. Site is rebuilt/deployed by your hosting workflow.
+
+## Environment Variables (Frontend)
+
+Set these where Astro builds/runs:
+
+- `PAYLOAD_API_URL`
+  - Example: `https://cms.example.com`
+  - Frontend pulls locations from: `${PAYLOAD_API_URL}/api/locations`
+- `PAYLOAD_ADMIN_URL`
+  - Example: `https://cms.example.com/admin`
+  - Used by `/admin/` launcher page
+
+If `PAYLOAD_API_URL` is missing/unreachable, frontend falls back to local `src/data/locations.json`.
+
+## Self-Hosting Choices (No Git Owner Flow)
+
+### Option A: Single VPS (recommended start)
+
+Run on one VPS with Docker:
+
+1. Payload CMS
+2. Postgres
+3. Reverse proxy (Caddy or Nginx)
+
+Use this when:
+
+- You want low cost
+- You can manage one server
+
+### Option B: Split Services (more robust)
+
+1. Payload + Postgres on one server
+2. Frontend static hosting/CDN on another
+3. Rebuild webhook from Payload changes
+
+Use this when:
+
+- You expect higher traffic
+- You want cleaner separation of concerns
+
+## Frontend Commands
 
 ```bash
 npm install
 npm run dev
-```
-
-Default local site URL: `http://localhost:4321`
-
-## Build
-
-```bash
 npm run build
-npm run preview
 ```
 
-Production output is generated in `dist/`.
+Build output:
 
-## Decap CMS
-
-### Admin URL
-
-- `http://localhost:4321/admin/` (during local dev)
-
-### Content Source
-
-- Editable content file: `src/data/store.json`
-- App consumes that data through: `src/config/store.ts`
-
-### Local CMS Editing Workflow
-
-Run these in separate terminals:
-
-```bash
-npm run dev
-npm run cms:proxy
-```
-
-Then open `/admin/` and edit content through the CMS form.
-
-### GitHub Backend Setup (required for deployed CMS writes)
-
-Update `public/admin/config.yml`:
-
-- `backend.repo`: set your real `owner/repo`
-- `backend.branch`: set your production branch
-
-If you deploy on Netlify with Identity + Git Gateway, switch backend accordingly.
-
-## What Staff Can Edit In CMS
-
-- Store profile (name, tagline, contact info, address)
-- Facebook/Google integration links
-- Google rating and review count display values
-- Opening hours
-- Services list
-- Service areas (drives `/areas/[slug]` pages)
-- FAQ items
-- Events list
-- Featured review snippets
+- `dist`
 
 ## Routes
 
-- `/` Home hub
-- `/services`
-- `/events`
-- `/community`
-- `/contact`
-- `/areas/[area]` dynamic local area pages
-- `/admin/` Decap CMS
+- `/` location picker (landing page)
+- `/locations/morrow/`
+- `/locations/milford/`
+- `/locations/[location]/services`
+- `/locations/[location]/events`
+- `/locations/[location]/community`
+- `/locations/[location]/contact`
+- `/locations/[location]/areas/[area]`
+- `/admin/` (Payload admin launcher)
 
-## Theme System
+## Payload Migration Note
 
-Theme selector is built into the shared layout and persists via `localStorage`.
-
-Available themes:
-
-- Ember
-- Dark
-- White
-- Tavern
-- Arcade
-
-## Deployment
-
-- Netlify: `netlify.toml`
-- Vercel: `vercel.json`
-- GitHub Pages: `.github/workflows/deploy-pages.yml`
+Legacy Decap config is left in `public/admin/config.yml` for reference only.
+Active owner CMS flow is Payload.

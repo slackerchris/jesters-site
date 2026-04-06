@@ -1,11 +1,70 @@
+---
+const payloadAdminUrl = import.meta.env.PAYLOAD_ADMIN_URL || 'http://localhost:3001/admin';
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Jesters Site CMS</title>
+		<title>Jester Cards and Games CMS Login</title>
+		<style>
+			body {
+				margin: 0;
+				font-family: "Segoe UI", Tahoma, sans-serif;
+				background: #0f1318;
+				color: #eef2f7;
+			}
+
+			.wrap {
+				max-width: 720px;
+				margin: 4rem auto;
+				padding: 1.5rem;
+				background: rgba(255, 255, 255, 0.04);
+				border: 1px solid rgba(255, 255, 255, 0.16);
+			}
+
+			h1 {
+				margin: 0;
+				font-size: 1.6rem;
+			}
+
+			p {
+				margin-top: 0.85rem;
+				line-height: 1.55;
+				color: #c9d3df;
+			}
+
+			a.button {
+				display: inline-flex;
+				margin-top: 1rem;
+				padding: 0.62rem 0.95rem;
+				font-size: 0.95rem;
+				font-weight: 700;
+				text-decoration: none;
+				background: #e45a3d;
+				border: 1px solid #e45a3d;
+				color: #fff;
+			}
+
+			small {
+				display: block;
+				margin-top: 0.8rem;
+				color: #95a3b4;
+			}
+		</style>
 	</head>
 	<body>
-		<script src="https://unpkg.com/decap-cms@^3.6.1/dist/decap-cms.js"></script>
+		<div class="wrap">
+			<h1>CMS Login</h1>
+			<p>
+				This project uses Payload CMS for owner editing with email/password login.
+				Click the button below to open the CMS admin.
+			</p>
+			<a class="button" href={payloadAdminUrl}>Open Payload Admin</a>
+			<small>
+				If this link does not work, set PAYLOAD_ADMIN_URL for this site and make sure your Payload server is running.
+			</small>
+		</div>
 	</body>
 </html>

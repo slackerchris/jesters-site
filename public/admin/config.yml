@@ -1,6 +1,7 @@
+# Legacy Decap config kept for reference only.
+# Active owner flow is now Payload CMS (see /admin page and README).
 backend:
-  name: github
-  repo: REPLACE_WITH_GITHUB_OWNER/REPLACE_WITH_REPO
+  name: git-gateway
   branch: main
 
 local_backend: true
@@ -11,193 +12,193 @@ media_folder: public/uploads
 public_folder: /uploads
 
 collections:
-  - name: site
-    label: Site Content
+  - name: siteLocations
+    label: Store Locations
     files:
-      - name: storeProfile
-        label: Store Profile
-        file: src/data/store.json
+      - name: locationsData
+        label: Locations Data
+        file: src/data/locations.json
         format: json
         fields:
-          - label: Store Name
-            name: name
-            widget: string
-
-          - label: Tagline
-            name: tagline
-            widget: text
-
-          - label: Website URL
-            name: websiteUrl
-            widget: string
-
-          - label: Phone
-            name: phone
-            widget: string
-
-          - label: Email
-            name: email
-            widget: string
-
-          - label: Price Range
-            name: priceRange
-            widget: string
-
-          - label: Address
-            name: address
-            widget: object
-            fields:
-              - label: Street Address
-                name: streetAddress
-                widget: string
-              - label: City
-                name: city
-                widget: string
-              - label: Region / State
-                name: region
-                widget: string
-              - label: Postal Code
-                name: postalCode
-                widget: string
-              - label: Country Code
-                name: countryCode
-                widget: string
-
-          - label: Facebook Page URL
-            name: facebookPageUrl
-            widget: string
-
-          - label: Google Maps Embed URL
-            name: googleMapsEmbedUrl
-            widget: string
-
-          - label: Google Maps Place URL
-            name: googleMapsPlaceUrl
-            widget: string
-
-          - label: Google Reviews URL
-            name: googleReviewsUrl
-            widget: string
-
-          - label: Google Rating
-            name: googleRating
-            widget: number
-            required: false
-            min: 0
-            max: 5
-            step: 0.1
-            value_type: float
-
-          - label: Google Review Count
-            name: googleReviewCount
-            widget: number
-            required: true
-            min: 0
-            step: 1
-            value_type: int
-
-          - label: Opening Hours
-            name: openingHours
+          - label: Locations
+            name: locations
             widget: list
-            fields:
-              - label: Day Label
-                name: label
-                widget: string
-              - label: Opens (24h format, e.g. 10:00)
-                name: opens
-                widget: string
-                required: false
-                hint: "24h input is allowed (e.g. 21:00) and will display as 9:00 PM"
-              - label: Closes (24h format, e.g. 18:00)
-                name: closes
-                widget: string
-                required: false
-                hint: "24h input is allowed (e.g. 21:00) and will display as 9:00 PM"
-              - label: Closed
-                name: closed
-                widget: boolean
-
-          - label: Service Areas
-            name: serviceAreas
-            widget: list
+            summary: "{{name}} ({{slug}})"
             fields:
               - label: Slug
                 name: slug
                 widget: string
-                hint: "URL part used for /areas/slug"
-              - label: Name
+              - label: Status
+                name: status
+                widget: select
+                options:
+                  - Open
+                  - Opening Soon
+              - label: Landing Summary
+                name: landingSummary
+                widget: text
+              - label: Store Name
                 name: name
                 widget: string
-              - label: Summary
-                name: summary
+              - label: Tagline
+                name: tagline
                 widget: text
-
-          - label: Services
-            name: services
-            widget: list
-            fields:
-              - label: Service Name
-                name: name
+              - label: Website URL
+                name: websiteUrl
                 widget: string
-              - label: Description
-                name: description
-                widget: text
-
-          - label: Featured Reviews
-            name: featuredReviews
-            widget: list
-            required: false
-            fields:
-              - label: Author
-                name: author
+              - label: Phone
+                name: phone
                 widget: string
-              - label: Rating
-                name: rating
+              - label: Email
+                name: email
+                widget: string
+              - label: Price Range
+                name: priceRange
+                widget: string
+              - label: Address
+                name: address
+                widget: object
+                fields:
+                  - label: Street Address
+                    name: streetAddress
+                    widget: string
+                  - label: City
+                    name: city
+                    widget: string
+                  - label: Region / State
+                    name: region
+                    widget: string
+                  - label: Postal Code
+                    name: postalCode
+                    widget: string
+                  - label: Country Code
+                    name: countryCode
+                    widget: string
+              - label: Facebook Page URL
+                name: facebookPageUrl
+                widget: string
+              - label: Google Maps Embed URL
+                name: googleMapsEmbedUrl
+                widget: string
+              - label: Google Maps Place URL
+                name: googleMapsPlaceUrl
+                widget: string
+              - label: Google Reviews URL
+                name: googleReviewsUrl
+                widget: string
+              - label: Google Rating
+                name: googleRating
                 widget: number
-                min: 1
+                required: false
+                min: 0
                 max: 5
+                step: 0.1
+                value_type: float
+              - label: Google Review Count
+                name: googleReviewCount
+                widget: number
+                required: true
+                min: 0
                 step: 1
                 value_type: int
-              - label: Review Text
-                name: text
-                widget: text
-              - label: Source
-                name: source
-                widget: string
-
-          - label: FAQ Items
-            name: faqItems
-            widget: list
-            fields:
-              - label: Question
-                name: question
-                widget: string
-              - label: Answer
-                name: answer
-                widget: text
-
-          - label: Events
-            name: events
-            widget: list
-            fields:
-              - label: Event Title
-                name: title
-                widget: string
-              - label: Event Date
-                name: date
-                widget: datetime
-                date_format: YYYY-MM-DD
-                time_format: false
-              - label: Event Time Label
-                name: time
-                widget: string
-                hint: "Example: 6:00 PM - 9:00 PM"
-              - label: Event Location
-                name: location
-                widget: string
-              - label: Event Description
-                name: description
-                widget: text
-              - label: Facebook Event URL
-                name: facebookEventUrl
-                widget: string
+              - label: Opening Hours
+                name: openingHours
+                widget: list
+                fields:
+                  - label: Day Label
+                    name: label
+                    widget: string
+                  - label: Opens (24h format, e.g. 10:00)
+                    name: opens
+                    widget: string
+                    required: false
+                    hint: "24h input is allowed (e.g. 21:00) and will display as 9:00 PM"
+                  - label: Closes (24h format, e.g. 18:00)
+                    name: closes
+                    widget: string
+                    required: false
+                    hint: "24h input is allowed (e.g. 21:00) and will display as 9:00 PM"
+                  - label: Closed
+                    name: closed
+                    widget: boolean
+              - label: Service Areas
+                name: serviceAreas
+                widget: list
+                fields:
+                  - label: Slug
+                    name: slug
+                    widget: string
+                    hint: "URL part used for /areas/slug"
+                  - label: Name
+                    name: name
+                    widget: string
+                  - label: Summary
+                    name: summary
+                    widget: text
+              - label: Services
+                name: services
+                widget: list
+                fields:
+                  - label: Service Name
+                    name: name
+                    widget: string
+                  - label: Description
+                    name: description
+                    widget: text
+              - label: Featured Reviews
+                name: featuredReviews
+                widget: list
+                required: false
+                fields:
+                  - label: Author
+                    name: author
+                    widget: string
+                  - label: Rating
+                    name: rating
+                    widget: number
+                    min: 1
+                    max: 5
+                    step: 1
+                    value_type: int
+                  - label: Review Text
+                    name: text
+                    widget: text
+                  - label: Source
+                    name: source
+                    widget: string
+              - label: FAQ Items
+                name: faqItems
+                widget: list
+                fields:
+                  - label: Question
+                    name: question
+                    widget: string
+                  - label: Answer
+                    name: answer
+                    widget: text
+              - label: Events
+                name: events
+                widget: list
+                required: false
+                fields:
+                  - label: Event Title
+                    name: title
+                    widget: string
+                  - label: Event Date
+                    name: date
+                    widget: datetime
+                    date_format: YYYY-MM-DD
+                    time_format: false
+                  - label: Event Time Label
+                    name: time
+                    widget: string
+                    hint: "Example: 6:00 PM - 9:00 PM"
+                  - label: Event Location
+                    name: location
+                    widget: string
+                  - label: Event Description
+                    name: description
+                    widget: text
+                  - label: Facebook Event URL
+                    name: facebookEventUrl
+                    widget: string

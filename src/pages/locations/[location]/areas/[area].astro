@@ -1,0 +1,94 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getFullStreetAddress, storeLocations, type StoreLocation } from '../../../../config/store';
+import LocationTopNav from '../../../../components/LocationTopNav.astro';
+import Layout from '../../../../layouts/Layout.astro';
+
+interface AreaProps {
+	slug: string;
+	name: string;
+	summary: string;
+}
+
+export const getStaticPaths: GetStaticPaths = async () =>
+	storeLocations.flatMap((location) =>
+		location.serviceAreas.map((area) => ({
+			params: {
+				location: location.slug,
+				area: area.slug
+			},
+			props: {
+				locationProfile: location,
+				area
+			}
+		}))
+	);
+
+const { locationProfile, area } = Astro.props as { locationProfile: StoreLocation; area: AreaProps };
+const locationBasePath = `/locations/${locationProfile.slug}`;
+const fullStreetAddress = getFullStreetAddress(locationProfile);
+const areaDescription = `${locationProfile.name} game store support for players in ${area.name}.`;
+
+const areaSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Store',
+	name: locationProfile.name,
+	url: `${locationProfile.websiteUrl}${locationBasePath}/areas/${area.slug}`,
+	description: `${locationProfile.name} game nights, products, and hobby support for players in ${area.name}.`,
+	telephone: locationProfile.phone,
+	areaServed: {
+		'@type': 'City',
+		name: area.name
+	},
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: locationProfile.address.streetAddress,
+		addressLocality: locationProfile.address.city,
+		addressRegion: locationProfile.address.region,
+		postalCode: locationProfile.address.postalCode,
+		addressCountry: locationProfile.address.countryCode
+	}
+};
+---
+
+<Layout
+	title={`${area.name} Player Community | ${locationProfile.name}`}
+	description={areaDescription}
+	canonicalUrl={`${locationProfile.websiteUrl}${locationBasePath}/areas/${area.slug}`}
+	ogImage={`${locationProfile.websiteUrl}/og-store.svg`}
+>
+	<script type="application/ld+json" set:html={JSON.stringify(areaSchema)}></script>
+	<div class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 md:px-10">
+		<LocationTopNav brand={locationProfile.name} basePath={locationBasePath} current="home" />
+
+		<section class="mt-12">
+			<p class="pill-badge">Local Player Community</p>
+			<h1 class="mt-4 text-4xl font-bold md:text-6xl">{locationProfile.name} for players in {area.name}</h1>
+			<p class="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--text-dim)] md:text-base">{area.summary}</p>
+		</section>
+
+		<section class="mt-10 grid gap-5 md:grid-cols-2">
+			<article class="surface-card p-6 md:p-7">
+				<h2 class="text-2xl font-bold">What players can expect</h2>
+				<ul class="mt-4 space-y-3 text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+					{locationProfile.services.slice(0, 3).map((service) => <li>- {service.name}</li>)}
+				</ul>
+			</article>
+			<article class="surface-card p-6 md:p-7">
+				<h2 class="text-2xl font-bold">Visit the shop</h2>
+				<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+					Swing by {fullStreetAddress}, {locationProfile.address.region} {locationProfile.address.postalCode} for game nights,
+					community play, and hobby support.
+				</p>
+				<a
+					href={locationProfile.googleMapsPlaceUrl}
+					target="_blank"
+					rel="noreferrer"
+					class="mt-5 inline-flex rounded-full bg-[var(--accent-500)] px-5 py-2 text-sm font-bold text-white transition hover:brightness-110"
+				>
+					Get Directions
+				</a>
+			</article>
+		</section>
+	</div>
+</Layout>

@@ -1,186 +1,275 @@
 ---
-import { fullStreetAddress, storeProfile } from '../config/store';
+import { storeLocations } from '../config/store';
 import Layout from '../layouts/Layout.astro';
+import jesterLogo from '../assets/jester.jpg';
 
-const dayMap: Record<string, string> = {
-	Monday: 'Monday',
-	Tuesday: 'Tuesday',
-	Wednesday: 'Wednesday',
-	Thursday: 'Thursday',
-	Friday: 'Friday',
-	Saturday: 'Saturday',
-	Sunday: 'Sunday'
-};
-
-const openingHoursSpecification = storeProfile.openingHours
-	.filter((entry) => !entry.closed)
-	.map((entry) => ({
-		'@type': 'OpeningHoursSpecification',
-		dayOfWeek: `https://schema.org/${dayMap[entry.label] ?? entry.label}`,
-		opens: entry.opens,
-		closes: entry.closes
-	}));
-
-const hasPublicRating =
-	storeProfile.googleReviewCount > 0 && storeProfile.googleRating > 0;
-
-const ratingStatusLabel = hasPublicRating
-	? `${storeProfile.googleRating} (${storeProfile.googleReviewCount} reviews)`
-	: 'Not yet rated (0 reviews)';
-
-const reviewsLabel = storeProfile.googleReviewCount === 1 ? 'review' : 'reviews';
-const reviewCountLabel = `${storeProfile.googleReviewCount} ${reviewsLabel}`;
-
-const businessSchema = {
+const selectorSchema = {
 	'@context': 'https://schema.org',
-	'@type': 'Store',
-	name: storeProfile.name,
-	url: storeProfile.websiteUrl,
-	description: storeProfile.tagline,
-	telephone: storeProfile.phone,
-	email: storeProfile.email,
-	priceRange: storeProfile.priceRange,
-	address: {
-		'@type': 'PostalAddress',
-		streetAddress: storeProfile.address.streetAddress,
-		addressLocality: storeProfile.address.city,
-		addressRegion: storeProfile.address.region,
-		postalCode: storeProfile.address.postalCode,
-		addressCountry: storeProfile.address.countryCode
-	},
-	openingHoursSpecification,
-	...(hasPublicRating
-		? {
-			aggregateRating: {
-				'@type': 'AggregateRating',
-				ratingValue: storeProfile.googleRating,
-				reviewCount: storeProfile.googleReviewCount
-			}
-		}
-		: {}),
-	sameAs: [storeProfile.facebookPageUrl, storeProfile.googleMapsPlaceUrl]
+	'@type': 'ItemList',
+	name: 'Store Locations',
+	numberOfItems: storeLocations.length,
+	itemListElement: storeLocations.map((location, index) => ({
+		'@type': 'ListItem',
+		position: index + 1,
+		name: location.name,
+		url: `${location.websiteUrl}/locations/${location.slug}`
+	}))
 };
 ---
 
 <Layout
-	title={`${storeProfile.name} | TCG and Hobby Game Store`}
-	description={`${storeProfile.name} in ${storeProfile.address.city}, ${storeProfile.address.region} for TCGs, Warhammer 40K, events, and community play nights.`}
-	canonicalUrl={storeProfile.websiteUrl}
-	ogImage={`${storeProfile.websiteUrl}/og-store.svg`}
+	title="Welcome to Jester Cards and Games"
+	description="Choose your nearest Jester Cards and Games location for local events, community updates, and store details."
 >
-	<script type="application/ld+json" set:html={JSON.stringify(businessSchema)}></script>
-	<div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
+	<script type="application/ld+json" set:html={JSON.stringify(selectorSchema)}></script>
+	<div class="landing-shell mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
+		<div class="guild-atmosphere" aria-hidden="true">
+			<span class="orb orb-a"></span>
+			<span class="orb orb-b"></span>
+			<span class="orb orb-c"></span>
+		</div>
+
 		<header class="reveal-up flex items-center justify-between gap-6">
-			<a href="/" class="text-xl font-bold tracking-wide">{storeProfile.name}</a>
-			<nav class="hidden items-center gap-6 text-sm font-medium text-[var(--text-dim)] md:flex">
-				<a href="/services" class="transition hover:text-white">Game Lines</a>
-				<a href="/events" class="transition hover:text-white">Events</a>
-				<a href="/community" class="transition hover:text-white">Community</a>
-				<a href="/contact" class="transition hover:text-white">Visit</a>
-			</nav>
+			<p class="text-xl font-bold tracking-wide">Jester Cards and Games</p>
+			<p class="text-sm font-semibold tracking-[0.14em] text-[var(--text-dim)] uppercase">Choose Your Hall</p>
 		</header>
 
-		<section class="mt-14 grid items-center gap-10 md:mt-20 md:grid-cols-[1.1fr_0.9fr]">
-			<div>
-				<p class="pill-badge reveal-up reveal-delay-1">Local Hobby Game Store</p>
-				<h1 class="reveal-up reveal-delay-2 mt-5 text-5xl leading-[1.05] font-bold md:text-7xl">
-					Cards, minis, and community nights in one place.
-				</h1>
-				<p class="reveal-up reveal-delay-3 mt-6 max-w-xl text-base leading-relaxed text-[var(--text-dim)] md:text-lg">
-					{storeProfile.tagline} Follow new drops, upcoming events, and shop updates right here,
-					then jump to Facebook for the latest community posts.
-				</p>
-				<div class="reveal-up reveal-delay-3 mt-8 flex flex-wrap gap-4">
-					<a
-						href="/community"
-						class="rounded-full bg-[var(--accent-500)] px-6 py-3 text-sm font-bold text-white transition hover:translate-y-[-1px] hover:brightness-110"
-					>
-						See Community Feed
-					</a>
-					<a
-						href="/services"
-						class="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-					>
-						Browse Game Lines
-					</a>
-					<a
-						href="/contact"
-						class="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-					>
-						Plan Your Visit
-					</a>
-					<a
-						href="/events"
-						class="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-					>
-						Upcoming Events
-					</a>
-				</div>
-			</div>
-
-			<div class="surface-card reveal-up reveal-delay-2 p-6 md:p-8">
-				<p class="text-sm font-semibold tracking-[0.2em] text-[var(--mint-300)] uppercase">Quick snapshot</p>
-				<div class="mt-5 space-y-4">
-					<div class="border-b border-white/12 px-0 py-3">
-						<p class="text-sm text-[var(--text-dim)]">City</p>
-						<p class="mt-1 text-lg font-bold">{storeProfile.address.city}</p>
-					</div>
-					<div class="border-b border-white/12 px-0 py-3">
-						<p class="text-sm text-[var(--text-dim)]">Address</p>
-						<p class="mt-1 text-lg font-bold">{fullStreetAddress}</p>
-					</div>
-					<div class="px-0 py-3">
-						<p class="text-sm text-[var(--text-dim)]">Google rating</p>
-						<p class="mt-1 text-lg font-bold">{ratingStatusLabel}</p>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<section class="mt-20 grid gap-5 md:grid-cols-2">
-			<a href="/services" class="surface-card p-6 transition hover:bg-white/5">
-				<p class="text-xs tracking-[0.16em] text-[var(--accent-300)] uppercase">Page 1</p>
-				<h2 class="mt-2 text-3xl font-bold">Game Lines and Stock</h2>
-				<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">See what games and hobby lines the shop focuses on.</p>
-			</a>
-			<a href="/events" class="surface-card p-6 transition hover:bg-white/5">
-				<p class="text-xs tracking-[0.16em] text-[var(--accent-300)] uppercase">Page 2</p>
-				<h2 class="mt-2 text-3xl font-bold">Event Calendar</h2>
-				<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">Browse upcoming game nights and event details.</p>
-			</a>
-			<a href="/community" class="surface-card p-6 transition hover:bg-white/5">
-				<p class="text-xs tracking-[0.16em] text-[var(--accent-300)] uppercase">Page 3</p>
-				<h2 class="mt-2 text-3xl font-bold">Community and Reviews</h2>
-				<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">
-					Facebook feed, map, Google rating status, and player FAQ are now on a dedicated page.
-				</p>
-			</a>
-			<a href="/contact" class="surface-card p-6 transition hover:bg-white/5">
-				<p class="text-xs tracking-[0.16em] text-[var(--accent-300)] uppercase">Page 4</p>
-				<h2 class="mt-2 text-3xl font-bold">Visit and Contact</h2>
-				<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">Phone, email, hours, and directions in one place.</p>
-			</a>
-		</section>
-
-		<section class="mt-14">
-			<h2 class="text-2xl font-bold md:text-3xl">Serving local players</h2>
-			<div class="mt-5 flex flex-wrap gap-3">
-				{storeProfile.serviceAreas.map((area) => (
-					<a
-						href={`/areas/${area.slug}`}
-						class="rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-					>
-						{area.name}
-					</a>
-				))}
-			</div>
-			<p class="mt-4 text-sm text-[var(--text-dim)]">
-				Rating status: <span class="font-semibold text-white">{ratingStatusLabel}</span> | Reviews: <span class="font-semibold text-white">{reviewCountLabel}</span>
+		<section
+			class="guild-hero reveal-up reveal-delay-1 mt-10 md:mt-14"
+			style={`--seal-url: url('${jesterLogo.src}')`}
+		>
+			<p class="pill-badge">Two Locations, One Community</p>
+			<h1 class="guild-title mt-5">Choose your location and step into the adventure.</h1>
+			<p class="guild-copy mt-6">
+				Each store has its own events, updates, and contact details. Start with your closest location and find your next game night.
 			</p>
 		</section>
 
-		<footer class="mt-16 border-t border-white/15 pt-6 text-xs tracking-wide text-[var(--text-dim)] uppercase">
-			{storeProfile.name} - your local TCG and hobby game store.
-		</footer>
+		<section class="reveal-up reveal-delay-2 mt-12">
+			<div class="location-list">
+				{
+					storeLocations.map((location) => (
+						<a href={`/locations/${location.slug}`} class="location-row">
+							<div>
+								<p class={`status-chip ${location.status === 'Open' ? 'status-open' : 'status-soon'}`}>{location.status}</p>
+								<h2 class="location-title mt-3">{location.name}</h2>
+								<p class="location-summary mt-3">{location.landingSummary}</p>
+							</div>
+							<div class="location-meta">
+								<p class="location-city">{location.address.city}, {location.address.region}</p>
+								<p class="location-street">{location.address.streetAddress}</p>
+								<p class="location-action">View Location</p>
+							</div>
+						</a>
+					))
+				}
+			</div>
+		</section>
 	</div>
+
+	<style>
+		.landing-shell {
+			position: relative;
+			overflow: hidden;
+		}
+
+		.landing-shell > :not(.guild-atmosphere) {
+			position: relative;
+			z-index: 1;
+		}
+
+		.guild-atmosphere {
+			position: absolute;
+			inset: 0;
+			pointer-events: none;
+			z-index: 0;
+		}
+
+		.orb {
+			position: absolute;
+			border-radius: 999px;
+			filter: blur(0.2rem);
+		}
+
+		.orb-a {
+			top: 6rem;
+			left: -3rem;
+			width: 16rem;
+			height: 16rem;
+			background: radial-gradient(circle, rgb(242 95 76 / 25%), transparent 70%);
+		}
+
+		.orb-b {
+			top: 0;
+			right: -2rem;
+			width: 14rem;
+			height: 14rem;
+			background: radial-gradient(circle, rgb(255 209 102 / 24%), transparent 70%);
+		}
+
+		.orb-c {
+			bottom: 4rem;
+			left: 40%;
+			width: 18rem;
+			height: 18rem;
+			background: radial-gradient(circle, rgb(140 230 199 / 16%), transparent 72%);
+		}
+
+		.guild-hero {
+			position: relative;
+			text-align: center;
+			max-width: 52rem;
+			margin-inline: auto;
+			padding-top: 7.25rem;
+		}
+
+		.guild-hero::before {
+			content: '';
+			position: absolute;
+			top: -1.9rem;
+			left: 50%;
+			transform: translateX(-50%);
+			width: min(52vw, 16rem);
+			height: min(52vw, 16rem);
+			background-image: var(--seal-url);
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: contain;
+			opacity: 0.22;
+			mix-blend-mode: lighten;
+			filter: saturate(0.82) contrast(1.08);
+			mask-image: radial-gradient(circle, rgb(0 0 0 / 86%) 48%, transparent 82%);
+			pointer-events: none;
+			z-index: 0;
+		}
+
+		.guild-hero > * {
+			position: relative;
+			z-index: 1;
+		}
+
+		.guild-title {
+			font-size: clamp(2.15rem, 6vw, 4.55rem);
+			line-height: 1.04;
+			letter-spacing: 0.01em;
+		}
+
+		.guild-copy {
+			max-width: 38rem;
+			margin-inline: auto;
+			font-size: clamp(1rem, 2.4vw, 1.14rem);
+			line-height: 1.68;
+			color: var(--text-dim);
+		}
+
+		.location-list {
+			border-top: 1px solid rgb(255 255 255 / 26%);
+			border-bottom: 1px solid rgb(255 255 255 / 22%);
+		}
+
+		.location-row {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 1.25rem;
+			padding: 1.4rem 0.25rem;
+			border-top: 1px solid rgb(255 255 255 / 10%);
+			transition: background-color 200ms ease, transform 200ms ease;
+		}
+
+		.location-row:first-child {
+			border-top: 0;
+		}
+
+		.location-row:hover {
+			background: linear-gradient(90deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 0%) 52%);
+			transform: translateX(0.2rem);
+		}
+
+		.status-chip {
+			display: inline-flex;
+			font-size: 0.73rem;
+			font-weight: 700;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			padding: 0.22rem 0.52rem;
+			border: 1px solid rgb(255 255 255 / 25%);
+		}
+
+		.status-open {
+			color: var(--mint-300);
+			border-color: rgb(140 230 199 / 45%);
+		}
+
+		.status-soon {
+			color: var(--accent-300);
+			border-color: rgb(255 209 102 / 40%);
+		}
+
+		.location-title {
+			font-size: clamp(1.85rem, 3vw, 2.4rem);
+			line-height: 1.12;
+		}
+
+		.location-summary {
+			max-width: 40rem;
+			font-size: 0.99rem;
+			line-height: 1.62;
+			color: var(--text-dim);
+		}
+
+		.location-meta {
+			display: flex;
+			flex-direction: column;
+			align-self: center;
+			gap: 0.2rem;
+		}
+
+		.location-city {
+			font-size: 0.94rem;
+			font-weight: 700;
+		}
+
+		.location-street {
+			font-size: 0.75rem;
+			color: var(--text-dim);
+		}
+
+		.location-action {
+			margin-top: 0.48rem;
+			font-size: 0.72rem;
+			font-weight: 700;
+			letter-spacing: 0.14em;
+			text-transform: uppercase;
+			color: var(--accent-300);
+		}
+
+		@media (min-width: 820px) {
+			.location-row {
+				grid-template-columns: minmax(0, 1fr) auto;
+				align-items: center;
+				padding: 1.6rem 0.35rem;
+			}
+
+			.location-meta {
+				text-align: right;
+			}
+		}
+
+		:global(html[data-theme='white']) .guild-hero::before {
+			opacity: 0.1;
+			mix-blend-mode: multiply;
+		}
+
+		@media (max-width: 640px) {
+			.guild-hero {
+				padding-top: 6rem;
+			}
+
+			.guild-hero::before {
+				top: -1.6rem;
+				width: min(68vw, 14rem);
+				height: min(68vw, 14rem);
+			}
+		}
+	</style>
 </Layout>

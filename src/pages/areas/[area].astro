@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import { fullStreetAddress, storeProfile } from '../../config/store';
 import Layout from '../../layouts/Layout.astro';
+import SiteTopNav from '../../components/SiteTopNav.astro';
 
 interface AreaProps {
 	slug: string;
@@ -48,15 +49,7 @@ const areaSchema = {
 >
 	<script type="application/ld+json" set:html={JSON.stringify(areaSchema)}></script>
 	<div class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 md:px-10">
-		<header class="reveal-up flex items-center justify-between gap-6">
-			<a href="/" class="text-xl font-bold tracking-wide">{storeProfile.name}</a>
-			<nav class="flex items-center gap-5 text-sm font-semibold text-[var(--text-dim)]">
-				<a href="/" class="transition hover:text-white">Home</a>
-				<a href="/services" class="transition hover:text-white">Services</a>
-				<a href="/community" class="transition hover:text-white">Community</a>
-				<a href="/contact" class="transition hover:text-white">Contact</a>
-			</nav>
-		</header>
+		<SiteTopNav brand={storeProfile.name} current="home" />
 
 		<section class="mt-12">
 			<p class="pill-badge">Local Player Community</p>

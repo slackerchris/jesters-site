@@ -1,0 +1,191 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getFullStreetAddress, storeLocations, type StoreLocation } from '../../../config/store';
+import LocationTopNav from '../../../components/LocationTopNav.astro';
+import Layout from '../../../layouts/Layout.astro';
+
+export const getStaticPaths: GetStaticPaths = async () =>
+	storeLocations.map((location) => ({
+		params: { location: location.slug },
+		props: { locationProfile: location }
+	}));
+
+const { locationProfile } = Astro.props as { locationProfile: StoreLocation };
+const locationBasePath = `/locations/${locationProfile.slug}`;
+const fullStreetAddress = getFullStreetAddress(locationProfile);
+const featuredServices = locationProfile.services.slice(0, 3);
+const upcomingEvent = locationProfile.events[0];
+const secondaryCta = upcomingEvent
+	? {
+		label: 'View Upcoming Events',
+		href: `${locationBasePath}/events`
+	}
+	: {
+		label: 'See Community Updates',
+		href: `${locationBasePath}/community`
+	};
+
+const dayMap: Record<string, string> = {
+	Monday: 'Monday',
+	Tuesday: 'Tuesday',
+	Wednesday: 'Wednesday',
+	Thursday: 'Thursday',
+	Friday: 'Friday',
+	Saturday: 'Saturday',
+	Sunday: 'Sunday'
+};
+
+const openingHoursSpecification = locationProfile.openingHours
+	.filter((entry) => !entry.closed)
+	.map((entry) => ({
+		'@type': 'OpeningHoursSpecification',
+		dayOfWeek: `https://schema.org/${dayMap[entry.label] ?? entry.label}`,
+		opens: entry.opens,
+		closes: entry.closes
+	}));
+
+const hasPublicRating =
+	locationProfile.googleReviewCount > 0 && locationProfile.googleRating > 0;
+
+const ratingStatusLabel = hasPublicRating
+	? `${locationProfile.googleRating} (${locationProfile.googleReviewCount} reviews)`
+	: 'Not yet rated (0 reviews)';
+
+const reviewsLabel = locationProfile.googleReviewCount === 1 ? 'review' : 'reviews';
+const reviewCountLabel = `${locationProfile.googleReviewCount} ${reviewsLabel}`;
+
+const businessSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Store',
+	name: locationProfile.name,
+	url: `${locationProfile.websiteUrl}${locationBasePath}`,
+	description: locationProfile.tagline,
+	telephone: locationProfile.phone,
+	email: locationProfile.email,
+	priceRange: locationProfile.priceRange,
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: locationProfile.address.streetAddress,
+		addressLocality: locationProfile.address.city,
+		addressRegion: locationProfile.address.region,
+		postalCode: locationProfile.address.postalCode,
+		addressCountry: locationProfile.address.countryCode
+	},
+	openingHoursSpecification,
+	...(hasPublicRating
+		? {
+			aggregateRating: {
+				'@type': 'AggregateRating',
+				ratingValue: locationProfile.googleRating,
+				reviewCount: locationProfile.googleReviewCount
+			}
+		}
+		: {}),
+	sameAs: [locationProfile.facebookPageUrl, locationProfile.googleMapsPlaceUrl]
+};
+---
+
+<Layout
+	title={`${locationProfile.name} | TCG and Hobby Game Store`}
+	description={`${locationProfile.name} in ${locationProfile.address.city}, ${locationProfile.address.region} for TCGs, Warhammer 40K, events, and community play nights.`}
+	canonicalUrl={`${locationProfile.websiteUrl}${locationBasePath}`}
+	ogImage={`${locationProfile.websiteUrl}/og-store.svg`}
+>
+	<script type="application/ld+json" set:html={JSON.stringify(businessSchema)}></script>
+	<div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
+		<LocationTopNav brand={locationProfile.name} basePath={locationBasePath} current="home" />
+
+		<section class="mt-14 grid items-center gap-10 md:mt-20 md:grid-cols-[1.1fr_0.9fr]">
+			<div>
+				<p class="pill-badge reveal-up reveal-delay-1">{locationProfile.status} Location</p>
+				<h1 class="reveal-up reveal-delay-2 mt-5 text-5xl leading-[1.05] font-bold md:text-7xl">
+					A local game store built for gathering, play, and hobby nights.
+				</h1>
+				<p class="reveal-up reveal-delay-3 mt-6 max-w-xl text-base leading-relaxed text-[var(--text-dim)] md:text-lg">
+					{locationProfile.tagline} This page gives you the essentials first: where to find us,
+					what we focus on, and what is happening in-store.
+				</p>
+				<div class="reveal-up reveal-delay-3 mt-8 flex flex-wrap gap-4">
+					<a
+						href={`${locationBasePath}/contact`}
+						class="rounded-full bg-[var(--accent-500)] px-6 py-3 text-sm font-bold text-white transition hover:translate-y-[-1px] hover:brightness-110"
+					>
+						Plan Your Visit
+					</a>
+					<a
+						href={secondaryCta.href}
+						class="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+					>
+						{secondaryCta.label}
+					</a>
+				</div>
+			</div>
+
+			<div class="surface-card reveal-up reveal-delay-2 p-6 md:p-8">
+				<p class="text-sm font-semibold tracking-[0.2em] text-[var(--mint-300)] uppercase">Quick snapshot</p>
+				<div class="mt-5 space-y-4">
+					<div class="border-b border-white/12 px-0 py-3">
+						<p class="text-sm text-[var(--text-dim)]">City</p>
+						<p class="mt-1 text-lg font-bold">{locationProfile.address.city}</p>
+					</div>
+					<div class="border-b border-white/12 px-0 py-3">
+						<p class="text-sm text-[var(--text-dim)]">Address</p>
+						<p class="mt-1 text-lg font-bold">{fullStreetAddress}</p>
+					</div>
+					<div class="px-0 py-3">
+						<p class="text-sm text-[var(--text-dim)]">Google rating</p>
+						<p class="mt-1 text-lg font-bold">{ratingStatusLabel}</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="mt-20 grid gap-5 md:grid-cols-2">
+			<article class="surface-card p-6 md:p-8">
+				<p class="text-xs tracking-[0.16em] text-[var(--accent-300)] uppercase">In Store Focus</p>
+				<h2 class="mt-2 text-3xl font-bold">What players find here</h2>
+				<ul class="mt-4 space-y-3 text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+					{featuredServices.map((service) => (
+						<li>{service.name}</li>
+					))}
+				</ul>
+			</article>
+			<article class="surface-card p-6 md:p-8">
+				<p class="text-xs tracking-[0.16em] text-[var(--accent-300)] uppercase">Community Rhythm</p>
+				<h2 class="mt-2 text-3xl font-bold">What is happening this week</h2>
+				{upcomingEvent ? (
+					<div class="mt-4 space-y-2 text-sm text-[var(--text-dim)] md:text-base">
+						<p class="font-semibold text-white">{upcomingEvent.title}</p>
+						<p>{upcomingEvent.time}</p>
+						<p>{upcomingEvent.description}</p>
+					</div>
+				) : (
+					<p class="mt-4 text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+						No events posted yet for this location. Check community updates for the next announcement.
+					</p>
+				)}
+			</article>
+		</section>
+
+		<section class="mt-14">
+			<h2 class="text-2xl font-bold md:text-3xl">Serving local players</h2>
+			<div class="mt-5 flex flex-wrap gap-3">
+				{locationProfile.serviceAreas.map((area) => (
+					<span class="rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-white/90">
+						{area.name}
+					</span>
+				))}
+			</div>
+			<p class="mt-4 text-sm text-[var(--text-dim)]">
+				Rating status: <span class="font-semibold text-white">{ratingStatusLabel}</span> | Reviews: <span class="font-semibold text-white">{reviewCountLabel}</span>
+			</p>
+			<p class="mt-3 text-sm text-[var(--text-dim)]">
+				Need directions, hours, or direct contact details? <a href={`${locationBasePath}/contact`} class="font-semibold text-white underline-offset-4 hover:underline">Go to Visit and Contact</a>.
+			</p>
+		</section>
+
+		<footer class="mt-16 border-t border-white/15 pt-6 text-xs tracking-wide text-[var(--text-dim)] uppercase">
+			{locationProfile.name} - your local TCG and hobby game store.
+		</footer>
+	</div>
+</Layout>

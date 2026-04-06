@@ -1,0 +1,72 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { storeLocations, type StoreLocation } from '../../../config/store';
+import LocationTopNav from '../../../components/LocationTopNav.astro';
+import Layout from '../../../layouts/Layout.astro';
+
+export const getStaticPaths: GetStaticPaths = async () =>
+	storeLocations.map((location) => ({
+		params: { location: location.slug },
+		props: { locationProfile: location }
+	}));
+
+const { locationProfile } = Astro.props as { locationProfile: StoreLocation };
+const locationBasePath = `/locations/${locationProfile.slug}`;
+const eventsDescription = `Upcoming events for ${locationProfile.name}.`;
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+	weekday: 'short',
+	month: 'long',
+	day: 'numeric',
+	year: 'numeric'
+});
+---
+
+<Layout
+	title={`Game Nights and Events | ${locationProfile.name}`}
+	description={eventsDescription}
+	canonicalUrl={`${locationProfile.websiteUrl}${locationBasePath}/events`}
+	ogImage={`${locationProfile.websiteUrl}/og-store.svg`}
+>
+	<div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
+		<LocationTopNav brand={locationProfile.name} basePath={locationBasePath} current="events" />
+
+		<section class="mt-12">
+			<p class="pill-badge">Community Event Calendar</p>
+			<h1 class="mt-4 text-4xl font-bold md:text-6xl">Upcoming game nights and community events</h1>
+			<p class="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--text-dim)] md:text-base">
+				Track what is happening at this location, then jump to Facebook event pages for reminders and updates.
+			</p>
+		</section>
+
+		{
+			locationProfile.events.length > 0 ? (
+				<section class="mt-10 grid gap-5 md:grid-cols-2">
+					{
+						locationProfile.events.map((event) => (
+							<article class="surface-card p-6 md:p-7">
+								<p class="text-xs tracking-[0.2em] text-[var(--accent-300)] uppercase">
+									{dateFormatter.format(new Date(event.date))}
+								</p>
+								<h2 class="mt-2 text-2xl font-bold">{event.title}</h2>
+								<p class="mt-3 text-sm leading-relaxed text-[var(--text-dim)]">{event.description}</p>
+								<p class="mt-4 text-sm text-[var(--text-dim)]">{event.time} • {event.location}</p>
+								<a
+									href={event.facebookEventUrl}
+									target="_blank"
+									rel="noreferrer"
+									class="mt-5 inline-flex rounded-full border border-white/30 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+								>
+									Event details on Facebook
+								</a>
+							</article>
+						))
+					}
+				</section>
+			) : (
+				<section class="surface-card mt-10 p-6 text-sm text-[var(--text-dim)] md:p-8">
+					No events are posted for this location yet. Check back soon for the launch calendar.
+				</section>
+			)
+		}
+	</div>
+</Layout>

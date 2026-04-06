@@ -1,0 +1,37 @@
+---
+interface Props {
+	brand: string;
+	basePath: string;
+	current?: 'home' | 'services' | 'events' | 'community' | 'contact';
+}
+
+const { brand, basePath, current } = Astro.props;
+
+const links = [
+	{ id: 'home', label: 'Home', href: basePath },
+	{ id: 'services', label: 'Game Lines', href: `${basePath}/services` },
+	{ id: 'events', label: 'Events', href: `${basePath}/events` },
+	{ id: 'community', label: 'Community', href: `${basePath}/community` },
+	{ id: 'contact', label: 'Visit', href: `${basePath}/contact` }
+] as const;
+---
+
+<header class="reveal-up flex flex-wrap items-center justify-between gap-4 md:gap-6">
+	<a href={basePath} class="text-xl font-bold tracking-wide">{brand}</a>
+	<nav class="flex flex-wrap items-center gap-4 text-sm font-semibold text-[var(--text-dim)] md:gap-5">
+		{
+			links.map((link) => {
+				const isActive = current === link.id;
+				return (
+					<a
+						href={link.href}
+						class={`transition hover:text-white ${isActive ? 'text-white underline underline-offset-4 decoration-[var(--accent-300)] decoration-2' : ''}`}
+					>
+						{link.label}
+					</a>
+				);
+			})
+		}
+		<a href="/" class="transition hover:text-white">Locations</a>
+	</nav>
+</header>
