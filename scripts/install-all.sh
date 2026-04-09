@@ -46,6 +46,9 @@ fi
 
 cd "${REPO_ROOT}"
 
+log "Synchronizing environment files..."
+bash "${SCRIPT_DIR}/sync-env.sh"
+
 if [[ ! -d node_modules || ! -x node_modules/.bin/astro ]]; then
   log "Installing frontend dependencies with npm ci..."
   npm ci
@@ -61,23 +64,6 @@ bash "${SCRIPT_DIR}/start-preview.sh"
 
 cd "${PAYLOAD_DIR}"
 
-if [[ ! -f .env ]]; then
-  log "Creating deploy/payload/.env from .env.example"
-  cp .env.example .env
-fi
-
-if grep -q '^PAYLOAD_SECRET=replace_with_long_random_secret$' .env; then
-  payload_secret="$(openssl rand -base64 48 | tr -d '\n')"
-  sed -i "s|^PAYLOAD_SECRET=.*$|PAYLOAD_SECRET=${payload_secret}|" .env
-  log "Generated PAYLOAD_SECRET in deploy/payload/.env"
-fi
-
-if grep -q '^POSTGRES_PASSWORD=replace_with_strong_db_password$' .env; then
-  postgres_password="$(openssl rand -base64 24 | tr -d '\n' | tr '/+' 'AZ')"
-  sed -i "s|^POSTGRES_PASSWORD=.*$|POSTGRES_PASSWORD=${postgres_password}|" .env
-  log "Generated POSTGRES_PASSWORD in deploy/payload/.env"
-fi
-
 if [[ ! -f "${PAYLOAD_APP_DIR}/package.json" ]]; then
   log "Payload app source not found. Running one-time scaffold now..."
   cd "${PAYLOAD_APP_DIR}"
@@ -85,6 +71,10 @@ if [[ ! -f "${PAYLOAD_APP_DIR}/package.json" ]]; then
 fi
 
 cd "${PAYLOAD_DIR}"
+
+if [[ -z "${PAYLOAD_BIND_IP:-}" && -f "${REPO_ROOT}/.env" ]]; then
+  PAYLOAD_BIND_IP="$(awk -F= '$1=="PAYLOAD_BIND_IP" {sub(/^[^=]*=/, ""); print; exit}' "${REPO_ROOT}/.env")"
+fi
 
 PAYLOAD_BIND_IP="${PAYLOAD_BIND_IP:-127.0.0.1}"
 log "Starting CMS stack in NPM mode (PAYLOAD_BIND_IP=${PAYLOAD_BIND_IP})..."

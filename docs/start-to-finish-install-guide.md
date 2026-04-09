@@ -27,10 +27,28 @@ The command will:
 - install frontend deps if missing
 - build frontend
 - start preview container
-- create deploy/payload/.env if missing
-- generate missing Payload secret/password placeholders
+- sync env files from root .env
 - scaffold Payload app if missing
 - start Payload + Postgres in NPM mode
+
+## Single Env File (Recommended)
+
+You can edit one file at repo root:
+
+~~~bash
+cd ~/jesters-site
+cp .env.example .env
+~~~
+
+Then keep stack env files in sync with:
+
+~~~bash
+npm run env:sync
+~~~
+
+This updates:
+- deploy/preview/.env
+- deploy/payload/.env
 
 ---
 
@@ -138,13 +156,17 @@ cp .env.example .env
 openssl rand -base64 48
 ~~~
 
-Edit deploy/payload/.env and set at least:
+Edit root .env and set at least:
+- PAYLOAD_API_URL
+- PAYLOAD_ADMIN_URL
 - CMS_DOMAIN
 - LETSENCRYPT_EMAIL
-- POSTGRES_PASSWORD
-- PAYLOAD_SECRET (use generated secret)
 
-Keep POSTGRES_DB and POSTGRES_USER defaults unless you have a reason to change.
+Then sync stack env files:
+
+~~~bash
+npm run env:sync
+~~~
 
 ---
 

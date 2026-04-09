@@ -78,6 +78,15 @@ Set these where Astro builds or runs:
 
 If PAYLOAD_API_URL is missing or unavailable, frontend falls back to local data in src/data/locations.json.
 
+Simpler local setup:
+
+```bash
+cp .env.example .env
+npm run env:sync
+```
+
+Edit root `.env` as your single source of env values.
+
 ## New Customer Bootstrap
 
 Create a single-location customer baseline:

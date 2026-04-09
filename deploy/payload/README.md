@@ -34,6 +34,13 @@ cd deploy/payload
 cp .env.example .env
 ```
 
+If you are using the root one-file workflow, edit root `.env` and sync:
+
+```bash
+cd ../..
+npm run env:sync
+```
+
 Edit `.env` and set:
 
 - `CMS_DOMAIN`
