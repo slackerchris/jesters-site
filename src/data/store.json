@@ -1,55 +1,23 @@
 {
-  "googleMapsEmbedUrl": "https://www.google.com/maps?q=10+Miranda+St.,+Morrow,+OH,+45152&output=embed",
-  "faqItems": [
-    {
-      "question": "Are you open right now?",
-      "answer": "We are currently marked as opening soon. Follow our Facebook page for opening announcements."
-    },
-    {
-      "question": "What games do you carry?",
-      "answer": "We focus on Magic: The Gathering, Lorcana, Pokemon, One Piece, and Warhammer 40K products."
-    },
-    {
-      "question": "Do you host gaming events?",
-      "answer": "Yes. We host gaming events and keep updates on Facebook and this website events page."
-    },
-    {
-      "question": "Where can I leave a review?",
-      "answer": "Use the Google Reviews link on the homepage or contact page. We are currently listed with no reviews yet."
-    }
-  ],
-  "name": "Jester Cards and Games - Morrow",
-  "featuredReviews": [],
-  "googleReviewsUrl": "https://maps.google.com/?q=10+Miranda+St.,+Morrow,+OH,+45152",
-  "phone": "(513) 284-4110",
-  "tagline": "$$$$Magic the Gathering, Lorcana, Pokemon, One Piece, Warhammer 40K, plushies, and gaming events.",
-  "serviceAreas": [
-    {
-      "slug": "morrow-oh",
-      "name": "Morrow, OH",
-      "summary": "Local pickup and in-store shopping for the Morrow gaming community."
-    },
-    {
-      "slug": "lebanon-oh",
-      "name": "Lebanon, OH",
-      "summary": "Easy access for nearby players looking for cards, accessories, and plushies."
-    },
-    {
-      "slug": "maineville-oh",
-      "name": "Maineville, OH",
-      "summary": "Regional destination for TCG products, tabletop communities, and hobby events."
-    }
-  ],
+  "name": "Business Name",
+  "tagline": "Local store updates, services, and community events.",
+  "websiteUrl": "https://example.com",
+  "phone": "(000) 000-0000",
+  "email": "owner@example.com",
   "priceRange": "$$",
-  "websiteUrl": "https://tcgplayerpro.com",
   "address": {
-    "streetAddress": "10 Miranda St.",
-    "city": "Morrow",
-    "region": "OH",
-    "postalCode": "45152",
+    "streetAddress": "123 Main St",
+    "city": "Your City",
+    "region": "ST",
+    "postalCode": "00000",
     "countryCode": "US"
   },
+  "facebookPageUrl": "https://facebook.com",
+  "googleMapsEmbedUrl": "https://www.google.com/maps?q=123%20Main%20St%2C%20Your%20City%2C%20ST%2C%2000000&output=embed",
+  "googleMapsPlaceUrl": "https://maps.google.com/?q=123%20Main%20St%2C%20Your%20City%2C%20ST%2C%2000000",
+  "googleReviewsUrl": "https://maps.google.com/?q=123%20Main%20St%2C%20Your%20City%2C%20ST%2C%2000000",
   "googleRating": 0,
+  "googleReviewCount": 0,
   "openingHours": [
     {
       "label": "Monday",
@@ -71,75 +39,56 @@
     },
     {
       "label": "Thursday",
-      "opens": "16:00",
-      "closes": "21:00",
-      "closed": false
+      "opens": "",
+      "closes": "",
+      "closed": true
     },
     {
       "label": "Friday",
-      "opens": "12:00",
-      "closes": "23:00",
-      "closed": false
+      "opens": "",
+      "closes": "",
+      "closed": true
     },
     {
       "label": "Saturday",
-      "opens": "9:00",
-      "closes": "21:00",
-      "closed": false
+      "opens": "",
+      "closes": "",
+      "closed": true
     },
     {
       "label": "Sunday",
-      "opens": "12:00",
-      "closes": "18:00",
-      "closed": false
+      "opens": "",
+      "closes": "",
+      "closed": true
     }
   ],
-  "googleMapsPlaceUrl": "https://maps.google.com/?q=10+Miranda+St.,+Morrow,+OH,+45152",
-  "events": [
+  "serviceAreas": [
     {
-      "title": "Commander Open Play Night",
-      "date": "2026-04-19",
-      "time": "6:00 PM - 9:00 PM",
-      "location": "Jester Cards and Games - Morrow",
-      "description": "Community Magic: The Gathering open tables and casual pods.",
-      "facebookEventUrl": "https://www.facebook.com/events/"
-    },
-    {
-      "title": "Pokemon Trade and Play Meetup",
-      "date": "2026-04-26",
-      "time": "1:00 PM - 4:00 PM",
-      "location": "Jester Cards and Games - Morrow",
-      "description": "Bring your decks and binders for local trade and casual matches.",
-      "facebookEventUrl": "https://www.facebook.com/events/"
-    },
-    {
-      "title": "Warhammer 40K Hobby Table Day",
-      "date": "2026-05-03",
-      "time": "12:00 PM - 5:00 PM",
-      "location": "Jester Cards and Games - Morrow",
-      "description": "Painting, list planning, and tabletop sessions for local 40K players.",
-      "facebookEventUrl": "https://www.facebook.com/events/"
+      "slug": "your-city-st",
+      "name": "Your City, ST",
+      "summary": "Local service area for Your City."
     }
   ],
-  "facebookPageUrl": "https://www.facebook.com/profile.php?id=61578466583584",
-  "email": "jestersmorrow@gmail.com",
   "services": [
     {
-      "name": "Magic: The Gathering",
-      "description": "Sealed products, singles support, and regular play-focused community activity."
+      "name": "Primary Service",
+      "description": "Describe the core service this business offers."
     },
     {
-      "name": "Lorcana, Pokemon, and One Piece",
-      "description": "Popular trading card game products for collectors, new players, and competitive locals."
-    },
-    {
-      "name": "Warhammer 40K and Tabletop Hobby",
-      "description": "Core hobby lines and accessories for painting, building, and in-store play nights."
-    },
-    {
-      "name": "Plushies and Gaming Merchandise",
-      "description": "Collectibles, gifts, and add-ons for hobby fans and community events."
+      "name": "Secondary Service",
+      "description": "Describe another high-demand service."
     }
   ],
-  "googleReviewCount": 0
+  "featuredReviews": [],
+  "faqItems": [
+    {
+      "question": "Where are you located?",
+      "answer": "We are located at 123 Main St, Your City, ST 00000."
+    },
+    {
+      "question": "How can I contact you?",
+      "answer": "Call (000) 000-0000 or email owner@example.com."
+    }
+  ],
+  "events": []
 }
