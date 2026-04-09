@@ -1,0 +1,109 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: payload-postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  payload:
+    build:
+      context: ./payload-app
+      dockerfile: Dockerfile
+    container_name: payload-cms
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      NEXT_PUBLIC_SERVER_URL: https://${CMS_DOMAIN}
+      VIRTUAL_HOST: ${CMS_DOMAIN}
+      VIRTUAL_PORT: 3000
+      LETSENCRYPT_HOST: ${CMS_DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    expose:
+      - "3000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"const http=require('http');const req=http.get('http://127.0.0.1:3000/admin',res=>process.exit(res.statusCode < 500 ? 0 : 1));req.on('error',()=>process.exit(1));req.setTimeout(4000,()=>{req.destroy();process.exit(1)});\""
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:1.7
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  acme-companion:
+    image: nginxproxy/acme-companion:2.6
+    container_name: nginx-proxy-acme
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy
+    environment:
+      NGINX_PROXY_CONTAINER: nginx-proxy
+      DEFAULT_EMAIL: ${LETSENCRYPT_EMAIL}
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  postgres-backup:
+    image: prodrigestivill/postgres-backup-local:16
+    container_name: payload-postgres-backup
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SCHEDULE: ${BACKUP_SCHEDULE}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS}
+      BACKUP_KEEP_WEEKS: ${BACKUP_KEEP_WEEKS}
+      BACKUP_KEEP_MONTHS: ${BACKUP_KEEP_MONTHS}
+      HEALTHCHECK_PORT: 8080
+    volumes:
+      - backups:/backups
+
+volumes:
+  postgres_data:
+  certs:
+  vhost:
+  html:
+  acme:
+  backups:

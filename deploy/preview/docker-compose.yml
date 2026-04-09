@@ -1,0 +1,9 @@
+services:
+  site-preview:
+    build:
+      context: ../..
+      dockerfile: deploy/preview/Dockerfile
+    container_name: site-preview
+    restart: unless-stopped
+    ports:
+      - "${PREVIEW_PORT:-8080}:80"

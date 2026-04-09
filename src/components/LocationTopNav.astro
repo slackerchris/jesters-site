@@ -3,9 +3,10 @@ interface Props {
 	brand: string;
 	basePath: string;
 	current?: 'home' | 'services' | 'events' | 'community' | 'contact';
+	showLocationsLink?: boolean;
 }
 
-const { brand, basePath, current } = Astro.props;
+const { brand, basePath, current, showLocationsLink = true } = Astro.props;
 
 const links = [
 	{ id: 'home', label: 'Home', href: basePath },
@@ -32,6 +33,6 @@ const links = [
 				);
 			})
 		}
-		<a href="/" class="transition hover:text-white">Locations</a>
+		{showLocationsLink && <a href="/" class="transition hover:text-white">Locations</a>}
 	</nav>
 </header>

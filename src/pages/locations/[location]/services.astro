@@ -11,6 +11,7 @@ export const getStaticPaths: GetStaticPaths = async () =>
 	}));
 
 const { locationProfile } = Astro.props as { locationProfile: StoreLocation };
+const hasMultipleLocations = storeLocations.length > 1;
 const locationBasePath = `/locations/${locationProfile.slug}`;
 const servicesDescription = `${locationProfile.name} services in and around ${locationProfile.address.city}.`;
 ---
@@ -22,7 +23,12 @@ const servicesDescription = `${locationProfile.name} services in and around ${lo
 	ogImage={`${locationProfile.websiteUrl}/og-store.svg`}
 >
 	<div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
-		<LocationTopNav brand={locationProfile.name} basePath={locationBasePath} current="services" />
+		<LocationTopNav
+			brand={locationProfile.name}
+			basePath={locationBasePath}
+			current="services"
+			showLocationsLink={hasMultipleLocations}
+		/>
 
 		<section class="mt-12">
 			<p class="pill-badge">Game Lines and In-Store Focus</p>

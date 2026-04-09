@@ -3,6 +3,24 @@ import { storeLocations } from '../config/store';
 import Layout from '../layouts/Layout.astro';
 import jesterLogo from '../assets/jester.jpg';
 
+const primaryStoreName = storeLocations[0]?.name ?? 'Local Store';
+const brandName = primaryStoreName.includes(' - ') ? primaryStoreName.split(' - ')[0] : primaryStoreName;
+const hasMultipleLocations = storeLocations.length > 1;
+const locationBadge =
+	hasMultipleLocations
+		? `${storeLocations.length} Locations, One Community`
+		: 'One Location, One Community';
+const pageDescription = hasMultipleLocations
+	? `Choose your nearest ${brandName} location for local events, community updates, and store details.`
+	: `Get updates, events, and store details for ${brandName}.`;
+const navLabel = hasMultipleLocations ? 'Choose Your Hall' : 'Local Hub';
+const heroHeading = hasMultipleLocations
+	? 'Choose your location and step into the adventure.'
+	: 'Welcome to your local game store hub.';
+const heroCopy = hasMultipleLocations
+	? 'Each store has its own events, updates, and contact details. Start with your closest location and find your next game night.'
+	: 'Find store updates, events, and contact details in one place. Jump in and plan your next visit.';
+
 const selectorSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'ItemList',
@@ -18,8 +36,8 @@ const selectorSchema = {
 ---
 
 <Layout
-	title="Welcome to Jester Cards and Games"
-	description="Choose your nearest Jester Cards and Games location for local events, community updates, and store details."
+	title={`Welcome to ${brandName}`}
+	description={pageDescription}
 >
 	<script type="application/ld+json" set:html={JSON.stringify(selectorSchema)}></script>
 	<div class="landing-shell mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
@@ -30,19 +48,17 @@ const selectorSchema = {
 		</div>
 
 		<header class="reveal-up flex items-center justify-between gap-6">
-			<p class="text-xl font-bold tracking-wide">Jester Cards and Games</p>
-			<p class="text-sm font-semibold tracking-[0.14em] text-[var(--text-dim)] uppercase">Choose Your Hall</p>
+			<p class="text-xl font-bold tracking-wide">{brandName}</p>
+			<p class="text-sm font-semibold tracking-[0.14em] text-[var(--text-dim)] uppercase">{navLabel}</p>
 		</header>
 
 		<section
 			class="guild-hero reveal-up reveal-delay-1 mt-10 md:mt-14"
 			style={`--seal-url: url('${jesterLogo.src}')`}
 		>
-			<p class="pill-badge">Two Locations, One Community</p>
-			<h1 class="guild-title mt-5">Choose your location and step into the adventure.</h1>
-			<p class="guild-copy mt-6">
-				Each store has its own events, updates, and contact details. Start with your closest location and find your next game night.
-			</p>
+			<p class="pill-badge">{locationBadge}</p>
+			<h1 class="guild-title mt-5">{heroHeading}</h1>
+			<p class="guild-copy mt-6">{heroCopy}</p>
 		</section>
 
 		<section class="reveal-up reveal-delay-2 mt-12">

@@ -25,6 +25,7 @@ export const getStaticPaths: GetStaticPaths = async () =>
 	);
 
 const { locationProfile, area } = Astro.props as { locationProfile: StoreLocation; area: AreaProps };
+const hasMultipleLocations = storeLocations.length > 1;
 const locationBasePath = `/locations/${locationProfile.slug}`;
 const fullStreetAddress = getFullStreetAddress(locationProfile);
 const areaDescription = `${locationProfile.name} game store support for players in ${area.name}.`;
@@ -59,7 +60,12 @@ const areaSchema = {
 >
 	<script type="application/ld+json" set:html={JSON.stringify(areaSchema)}></script>
 	<div class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 md:px-10">
-		<LocationTopNav brand={locationProfile.name} basePath={locationBasePath} current="home" />
+		<LocationTopNav
+			brand={locationProfile.name}
+			basePath={locationBasePath}
+			current="home"
+			showLocationsLink={hasMultipleLocations}
+		/>
 
 		<section class="mt-12">
 			<p class="pill-badge">Local Player Community</p>

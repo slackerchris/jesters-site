@@ -11,6 +11,7 @@ export const getStaticPaths: GetStaticPaths = async () =>
 	}));
 
 const { locationProfile } = Astro.props as { locationProfile: StoreLocation };
+const hasMultipleLocations = storeLocations.length > 1;
 const locationBasePath = `/locations/${locationProfile.slug}`;
 const eventsDescription = `Upcoming events for ${locationProfile.name}.`;
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -28,7 +29,12 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 	ogImage={`${locationProfile.websiteUrl}/og-store.svg`}
 >
 	<div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
-		<LocationTopNav brand={locationProfile.name} basePath={locationBasePath} current="events" />
+		<LocationTopNav
+			brand={locationProfile.name}
+			basePath={locationBasePath}
+			current="events"
+			showLocationsLink={hasMultipleLocations}
+		/>
 
 		<section class="mt-12">
 			<p class="pill-badge">Community Event Calendar</p>

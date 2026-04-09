@@ -68,7 +68,29 @@ Use this when:
 npm install
 npm run dev
 npm run build
+npm run preview:docker:up
+npm run preview:docker:down
 ```
+
+## Template Workflow For New Customers
+
+Use this repo as your base starter and bootstrap each new customer with one command:
+
+```bash
+npm run new:client -- --name "Customer Business" --slug "main"
+```
+
+Use `--locations <count>` when a customer has multiple locations:
+
+```bash
+npm run new:client -- --name "Customer Business" --slug "main" --locations 3
+```
+
+This updates local fallback data files and creates a customer-specific CMS env template under `deploy/payload/customer-presets/`.
+
+Detailed process is documented in `docs/client-template-playbook.md`.
+
+LXC preview and template release flow is documented in `docs/lxc-preview-and-template-release.md`.
 
 Build output:
 

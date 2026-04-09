@@ -11,6 +11,7 @@ export const getStaticPaths: GetStaticPaths = async () =>
 	}));
 
 const { locationProfile } = Astro.props as { locationProfile: StoreLocation };
+const hasMultipleLocations = storeLocations.length > 1;
 const locationBasePath = `/locations/${locationProfile.slug}`;
 const communityDescription = `Community updates, Facebook feed, and store information for ${locationProfile.name}.`;
 const facebookPluginUrl = `https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(locationProfile.facebookPageUrl)}&tabs=events%2Ctimeline&width=520&height=680&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false`;
@@ -45,7 +46,12 @@ const faqSchema = {
 	<script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
 
 	<div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 md:px-10">
-		<LocationTopNav brand={locationProfile.name} basePath={locationBasePath} current="community" />
+		<LocationTopNav
+			brand={locationProfile.name}
+			basePath={locationBasePath}
+			current="community"
+			showLocationsLink={hasMultipleLocations}
+		/>
 
 		<section class="mt-12">
 			<p class="pill-badge">Community Hub</p>
