@@ -10,7 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "install:all": "bash scripts/install-all.sh",
     "new:client": "node scripts/bootstrap-client.mjs",
+    "preview:docker:build-up": "bash scripts/build-and-start-preview.sh",
     "preview:docker:up": "bash scripts/start-preview.sh",
     "preview:docker:down": "bash scripts/stop-preview.sh"
   },

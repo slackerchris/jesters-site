@@ -53,6 +53,35 @@ openssl rand -base64 48
 docker compose up -d --build
 ```
 
+## Using Nginx Proxy Manager Instead Of Built-In Proxy
+
+If you already use Nginx Proxy Manager (NPM), run Payload without the
+`nginx-proxy` and `acme-companion` services from this stack.
+
+Use the override file:
+
+- `deploy/payload/docker-compose.npm.yml`
+
+Start services with override:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d --build
+```
+
+This publishes Payload on host port `3001` for NPM to proxy.
+
+Default bind is loopback only:
+
+- `127.0.0.1:3001`
+
+If NPM is on another host, set a bind IP first:
+
+```bash
+PAYLOAD_BIND_IP=0.0.0.0 docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d --build
+```
+
+Then restrict `3001` in your firewall to only the NPM host IP.
+
 ## 4) Verify everything is healthy
 
 ```bash

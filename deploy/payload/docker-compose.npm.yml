@@ -1,0 +1,16 @@
+services:
+  payload:
+    # Use Nginx Proxy Manager for TLS and public routing.
+    ports:
+      - "${PAYLOAD_BIND_IP:-127.0.0.1}:3001:3000"
+    environment:
+      VIRTUAL_HOST: ""
+      VIRTUAL_PORT: ""
+      LETSENCRYPT_HOST: ""
+      LETSENCRYPT_EMAIL: ""
+
+  nginx-proxy:
+    profiles: ["disabled"]
+
+  acme-companion:
+    profiles: ["disabled"]

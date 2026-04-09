@@ -39,6 +39,12 @@ Run a shareable preview from your local LXC Docker host:
 npm run preview:docker:up
 ```
 
+Build and start preview in one command:
+
+```bash
+npm run preview:docker:build-up
+```
+
 Stop preview:
 
 ```bash
@@ -109,6 +115,7 @@ Payload stack files:
 
 ## Template and Release Docs
 
+- Start-to-finish install guide: docs/start-to-finish-install-guide.md
 - Client template runbook: docs/client-template-playbook.md
 - LXC preview and template release guide: docs/lxc-preview-and-template-release.md
 
