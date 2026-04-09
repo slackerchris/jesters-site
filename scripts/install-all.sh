@@ -11,6 +11,17 @@ log() {
   echo "[install-all] $*"
 }
 
+verify_payload_lockfile_docker() {
+  local app_dir="$1"
+  local image="${PAYLOAD_LOCKFILE_NODE_IMAGE:-node:22.17.0-alpine}"
+
+  (
+    cd "${app_dir}" &&
+    docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/app -w /app "${image}" \
+      sh -lc "npm ci --ignore-scripts --no-audit --no-fund" >/dev/null 2>&1
+  )
+}
+
 require_cmd() {
   local cmd="$1"
   if ! command -v "${cmd}" >/dev/null 2>&1; then
@@ -72,13 +83,31 @@ fi
 
 if [[ -f "${PAYLOAD_APP_DIR}/package-lock.json" ]]; then
   log "Verifying Payload lockfile consistency..."
+  local_lock_ok="true"
+  docker_lock_ok="true"
+
   if ! (cd "${PAYLOAD_APP_DIR}" && NPM_CONFIG_USERCONFIG=/dev/null npm ci --ignore-scripts --no-audit --no-fund >/dev/null 2>&1); then
-    log "Payload lockfile mismatch detected. Repairing with npm install..."
+    local_lock_ok="false"
+  fi
+
+  if ! verify_payload_lockfile_docker "${PAYLOAD_APP_DIR}"; then
+    docker_lock_ok="false"
+  fi
+
+  if [[ "${local_lock_ok}" != "true" || "${docker_lock_ok}" != "true" ]]; then
+    log "Payload lockfile mismatch detected. Repairing with a clean lockfile..."
     (
       cd "${PAYLOAD_APP_DIR}" && \
-      NPM_CONFIG_USERCONFIG=/dev/null npm install --no-audit --no-fund && \
-      NPM_CONFIG_USERCONFIG=/dev/null npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      rm -rf node_modules package-lock.json && \
+      NPM_CONFIG_USERCONFIG=/dev/null npm install --include=dev --no-audit --no-fund
     )
+
+    if ! verify_payload_lockfile_docker "${PAYLOAD_APP_DIR}"; then
+      log "Payload lockfile still fails Docker npm ci validation."
+      log "Run this manually and retry:"
+      log "cd deploy/payload/payload-app && rm -rf node_modules package-lock.json && npm install"
+      exit 1
+    fi
   fi
 fi
 
