@@ -18,7 +18,7 @@ verify_payload_lockfile_docker() {
   (
     cd "${app_dir}" &&
     docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/app -w /app "${image}" \
-      sh -lc "npm ci --ignore-scripts --no-audit --no-fund" >/dev/null 2>&1
+      sh -lc "if [ -f yarn.lock ]; then yarn --frozen-lockfile; elif [ -f package-lock.json ]; then npm ci --ignore-scripts --no-audit --no-fund; elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; else echo 'Lockfile not found.' && exit 1; fi" >/dev/null 2>&1
   )
 }
 
@@ -103,10 +103,20 @@ if [[ -f "${PAYLOAD_APP_DIR}/package-lock.json" ]]; then
     )
 
     if ! verify_payload_lockfile_docker "${PAYLOAD_APP_DIR}"; then
-      log "Payload lockfile still fails Docker npm ci validation."
-      log "Run this manually and retry:"
-      log "cd deploy/payload/payload-app && rm -rf node_modules package-lock.json && npm install"
-      exit 1
+      log "NPM lockfile still fails Docker validation. Switching to pnpm lockfile fallback..."
+      (
+        cd "${PAYLOAD_APP_DIR}" && \
+        rm -rf node_modules package-lock.json && \
+        corepack enable pnpm && \
+        pnpm install
+      )
+
+      if ! verify_payload_lockfile_docker "${PAYLOAD_APP_DIR}"; then
+        log "Payload lockfile still fails Docker validation."
+        log "Run this manually and retry:"
+        log "cd deploy/payload/payload-app && rm -rf node_modules package-lock.json pnpm-lock.yaml && corepack enable pnpm && pnpm install"
+        exit 1
+      fi
     fi
   fi
 fi

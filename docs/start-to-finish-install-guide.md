@@ -303,3 +303,15 @@ cd ..
 docker compose -f docker-compose.yml -f docker-compose.npm.yml build --no-cache payload
 docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d
 ~~~
+
+If npm lockfile still fails in Docker, switch payload-app to pnpm lockfile:
+
+~~~bash
+cd ~/jesters-site/deploy/payload/payload-app
+rm -rf node_modules package-lock.json pnpm-lock.yaml
+corepack enable pnpm
+pnpm install
+cd ..
+docker compose -f docker-compose.yml -f docker-compose.npm.yml build --no-cache payload
+docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d
+~~~
