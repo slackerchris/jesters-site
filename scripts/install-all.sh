@@ -22,6 +22,20 @@ verify_payload_lockfile_docker() {
   )
 }
 
+patch_payload_dockerfile_npmrc() {
+  local dockerfile="$1"
+
+  if [[ ! -f "${dockerfile}" ]]; then
+    return 0
+  fi
+
+  # Ensure Docker install stage sees npm config from .npmrc when using npm ci.
+  if grep -q 'COPY package.json yarn.lock\* package-lock.json\* pnpm-lock.yaml\* \./' "${dockerfile}"; then
+    sed -i 's|COPY package.json yarn.lock\* package-lock.json\* pnpm-lock.yaml\* \./|COPY package.json .npmrc* yarn.lock* package-lock.json* pnpm-lock.yaml* ./|g' "${dockerfile}"
+    log "Patched payload-app Dockerfile to include .npmrc during dependency install"
+  fi
+}
+
 require_cmd() {
   local cmd="$1"
   if ! command -v "${cmd}" >/dev/null 2>&1; then
@@ -80,6 +94,8 @@ if [[ ! -f "${PAYLOAD_APP_DIR}/package.json" ]]; then
   cd "${PAYLOAD_APP_DIR}"
   npx create-payload-app@latest . --use-npm
 fi
+
+patch_payload_dockerfile_npmrc "${PAYLOAD_APP_DIR}/Dockerfile"
 
 if [[ -f "${PAYLOAD_APP_DIR}/package-lock.json" ]]; then
   log "Verifying Payload lockfile consistency..."
