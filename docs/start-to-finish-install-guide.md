@@ -292,3 +292,12 @@ cd ~/jesters-site/deploy/payload
 docker compose -f docker-compose.yml -f docker-compose.npm.yml down
 docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d --build
 ~~~
+
+If CMS build fails with npm ci lockfile mismatch inside payload-app:
+
+~~~bash
+cd ~/jesters-site/deploy/payload/payload-app
+npm install
+cd ..
+docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d --build
+~~~

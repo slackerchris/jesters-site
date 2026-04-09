@@ -67,7 +67,15 @@ cd "${PAYLOAD_DIR}"
 if [[ ! -f "${PAYLOAD_APP_DIR}/package.json" ]]; then
   log "Payload app source not found. Running one-time scaffold now..."
   cd "${PAYLOAD_APP_DIR}"
-  npx create-payload-app@latest .
+  npx create-payload-app@latest . --use-npm
+fi
+
+if [[ -f "${PAYLOAD_APP_DIR}/package-lock.json" ]]; then
+  log "Verifying Payload lockfile consistency..."
+  if ! (cd "${PAYLOAD_APP_DIR}" && npm ci --ignore-scripts --no-audit --no-fund >/dev/null 2>&1); then
+    log "Payload lockfile mismatch detected. Repairing with npm install..."
+    (cd "${PAYLOAD_APP_DIR}" && npm install --no-audit --no-fund)
+  fi
 fi
 
 cd "${PAYLOAD_DIR}"
