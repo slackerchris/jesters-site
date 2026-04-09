@@ -297,7 +297,9 @@ If CMS build fails with npm ci lockfile mismatch inside payload-app:
 
 ~~~bash
 cd ~/jesters-site/deploy/payload/payload-app
-npm install
+NPM_CONFIG_USERCONFIG=/dev/null npm install --no-audit --no-fund
+NPM_CONFIG_USERCONFIG=/dev/null npm install --package-lock-only --ignore-scripts --no-audit --no-fund
 cd ..
-docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d --build
+docker compose -f docker-compose.yml -f docker-compose.npm.yml build --no-cache payload
+docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d
 ~~~

@@ -72,9 +72,13 @@ fi
 
 if [[ -f "${PAYLOAD_APP_DIR}/package-lock.json" ]]; then
   log "Verifying Payload lockfile consistency..."
-  if ! (cd "${PAYLOAD_APP_DIR}" && npm ci --ignore-scripts --no-audit --no-fund >/dev/null 2>&1); then
+  if ! (cd "${PAYLOAD_APP_DIR}" && NPM_CONFIG_USERCONFIG=/dev/null npm ci --ignore-scripts --no-audit --no-fund >/dev/null 2>&1); then
     log "Payload lockfile mismatch detected. Repairing with npm install..."
-    (cd "${PAYLOAD_APP_DIR}" && npm install --no-audit --no-fund)
+    (
+      cd "${PAYLOAD_APP_DIR}" && \
+      NPM_CONFIG_USERCONFIG=/dev/null npm install --no-audit --no-fund && \
+      NPM_CONFIG_USERCONFIG=/dev/null npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+    )
   fi
 fi
 
